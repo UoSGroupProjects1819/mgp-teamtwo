@@ -1,0 +1,45 @@
+# Ignore project files in the root
+ProjectZombie/*.sln
+ProjectZombie/*.vs
+
+# Ignore local user Visual Studio files in any folder
+*.suo
+*.opensdf
+*.sdf
+
+# Standard binary files
+*.lib
+*.idb
+*.a
+*.dll
+*.exe
+*.png
+*.bz2
+*.psd
+*.gif
+*.zip
+*.tga
+*.dylib
+*.gz
+*.so
+*.jar
+*.mp4
+*.pak
+*.bmp
+*.obj
+*.pdb
+
+# Engine binaries
+**/ProjectZombie/Binaries/**
+
+# Derived data cache is never checked in
+**/ProjectZombie/DerivedDataCache/**
+
+# Engine intermediates
+**/ProjectZombie/Intermediate/**
+
+# Ignore any saved local files
+**/ProjectZombie/Saved/**
+
+
+
