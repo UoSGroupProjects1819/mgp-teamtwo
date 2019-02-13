@@ -6,12 +6,11 @@
 #include "Engine/TargetPoint.h"
 #include "ZPAITargetPoint.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class PROJECTZOMBIE_API AZPAITargetPoint : public ATargetPoint
 {
 	GENERATED_BODY()
 	
+public:
+	AZPAITargetPoint();
 };

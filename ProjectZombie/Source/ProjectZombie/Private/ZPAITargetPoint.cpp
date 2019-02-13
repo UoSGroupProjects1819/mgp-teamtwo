@@ -2,3 +2,7 @@
 
 #include "ZPAITargetPoint.h"
 
+AZPAITargetPoint::AZPAITargetPoint()
+{
+
+}
