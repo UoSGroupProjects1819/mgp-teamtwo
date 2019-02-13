@@ -6,7 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "PZWeaponBase.generated.h"
 
-UCLASS()
+class APZCharacter;
+
+UCLASS(Abstract, Blueprintable)
 class PROJECTZOMBIE_API APZWeaponBase : public AActor
 {
 	GENERATED_BODY()
@@ -36,4 +38,16 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void DetachFromOwner();
+
+	virtual void GivenTo(APZCharacter* NewOwner);
+	virtual void Removed();
+
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Weapon")
+	APZCharacter* PZOwner;
+
+	FHitResult WeaponTrace(const FVector& StartTrace, const FVector& EndTrace) const;
+
+public:
+	FORCEINLINE USkeletalMeshComponent* GetMesh() const { return Mesh; }
 };

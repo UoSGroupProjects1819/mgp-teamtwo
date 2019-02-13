@@ -6,6 +6,8 @@
 APZZombie::APZZombie()
 {
 	AIControllerClass = APZZombieAI::StaticClass();
+
+	MaxHealth = 50;
 }
 
 void APZZombie::OnMelee()

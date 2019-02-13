@@ -7,6 +7,7 @@
 #include "PZCharacter.generated.h"
 
 class UCameraComponent;
+class APZWeaponBase;
 
 UCLASS()
 class PROJECTZOMBIE_API APZCharacter : public APZCharacterBase
@@ -43,4 +44,31 @@ public:
 
 	/** Handles strafing movement left */
 	void MoveLeft(float Value);
+
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	void CreateInventory();
+
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	void DestroyInventory();
+
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	void AddWeapon(APZWeaponBase* Weap);
+
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	void RemoveWeapon(APZWeaponBase* Weap);
+
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	void EquipWeapon(APZWeaponBase* Weap);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
+	TArray<TSubclassOf<APZWeaponBase>> DefaultInventoryClasses;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Pawn")
+	TArray<APZWeaponBase*> Inventory;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Pawn")
+	APZWeaponBase* Weapon;
+
+	FORCEINLINE USkeletalMeshComponent* GetFirstPersonMesh() const { return FirstPersonMesh; }
+	FORCEINLINE UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 };
