@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "PZCharacterBase.h"
 #include "PZCharacter.generated.h"
 
 class UCameraComponent;
 
 UCLASS()
-class PROJECTZOMBIE_API APZCharacter : public ACharacter
+class PROJECTZOMBIE_API APZCharacter : public APZCharacterBase
 {
 	GENERATED_BODY()
 

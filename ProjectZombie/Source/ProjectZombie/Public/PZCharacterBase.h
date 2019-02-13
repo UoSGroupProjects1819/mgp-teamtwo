@@ -19,6 +19,8 @@ public:
 	/** Apply damage to this pawn */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
+	/** Called when we run out of health */
+
 protected:
 	/** Current health of the pawn */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
