@@ -3,6 +3,8 @@
 #include "PZCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "PZCharacter.h"
+#include "PZWeaponBase.h"
 
 APZCharacter::APZCharacter()
 {
@@ -19,6 +21,8 @@ APZCharacter::APZCharacter()
 	FirstPersonMesh->bCastDynamicShadow = false;
 	FirstPersonMesh->CastShadow = false;
 	FirstPersonMesh->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
+
+	MaxHealth = 100;
 
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -83,5 +87,44 @@ void APZCharacter::MoveRight(float Value)
 void APZCharacter::MoveLeft(float Value)
 {
 	MoveRight(Value * -1);
+}
+
+void APZCharacter::CreateInventory()
+{
+	for (int32 i = 0; i < DefaultInventoryClasses.Num(); i++)
+	{
+
+	}
+}
+
+void APZCharacter::DestroyInventory()
+{
+
+}
+
+void APZCharacter::AddWeapon(APZWeaponBase* Weap)
+{
+	if (Weap)
+	{
+		Inventory.AddUnique(Weap);
+		Weap->GivenTo(this);
+	}
+}
+
+void APZCharacter::RemoveWeapon(APZWeaponBase* Weap)
+{
+	if (Weap)
+	{
+		Inventory.Remove(Weap);
+		Weap->Removed();
+	}
+}
+
+void APZCharacter::EquipWeapon(APZWeaponBase* Weap)
+{
+	if (Weap)
+	{
+		Weapon = Weap;
+	}
 }
 
