@@ -18,7 +18,6 @@ ProjectZombie/*.vs
 *.psd
 *.gif
 *.zip
-*.tga
 *.dylib
 *.gz
 *.so
