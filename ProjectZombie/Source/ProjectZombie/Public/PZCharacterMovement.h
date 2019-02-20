@@ -6,12 +6,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PZCharacterMovement.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class PROJECTZOMBIE_API UPZCharacterMovement : public UCharacterMovementComponent
 {
 	GENERATED_BODY()
 	
+public:
+	UPZCharacterMovement();
 };

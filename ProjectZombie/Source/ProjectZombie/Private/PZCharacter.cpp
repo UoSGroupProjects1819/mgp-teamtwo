@@ -3,8 +3,11 @@
 #include "PZCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "PZCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/PawnNoiseEmitterComponent.h"
+#include "Perception/PawnSensingComponent.h"
 #include "PZWeaponBase.h"
+#include "PZCharacterMovement.h"
 
 APZCharacter::APZCharacter()
 {
@@ -23,6 +26,11 @@ APZCharacter::APZCharacter()
 	FirstPersonMesh->bReceivesDecals = false;
 	FirstPersonMesh->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
 	FirstPersonMesh->PrimaryComponentTick.AddPrerequisite(this, PrimaryActorTick);
+
+	//PZCharacterMovement = Cast<UPZCharacterMovement>(GetCharacterMovement());
+
+	// Create a PawnNoiseEmitterComponent which will be used to emit sounds to AI characters.
+	//PawnNoiseEmitterComp = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("PawnNoiseEmitterComp"));
 
 	Health = 0;
 	MaxHealth = 100;
@@ -58,6 +66,16 @@ void APZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("LookUp", this, &APZCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APZCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APZCharacter::StopJumping);
+}
+
+void APZCharacter::CreateNoise(USoundBase* Sound, float Volume)
+{
+	if (Sound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
+
+		MakeNoise(Volume, this, GetActorLocation());
+	}
 }
 
 void APZCharacter::MoveForward(float Value)

@@ -7,7 +7,10 @@
 #include "PZCharacter.generated.h"
 
 class UCameraComponent;
+class UPawnNoiseEmitterComponent;
+class USoundBase;
 class APZWeaponBase;
+class UPZCharacterMovement;
 
 UCLASS()
 class PROJECTZOMBIE_API APZCharacter : public APZCharacterBase
@@ -26,12 +29,24 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
 
+	/** Cached PZCharacterMovement casted CharacterMovement */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
+	UPZCharacterMovement* PZCharacterMovement;
+
+	/** Noise Emitter component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
+	UPawnNoiseEmitterComponent* PawnNoiseEmitterComp;
+
 protected:
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	/** Called every time character makes a sound in the game. */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	virtual void CreateNoise(USoundBase* Sound, float Volume);
 
 	/** Handles moving forward */
 	void MoveForward(float Value);
@@ -53,24 +68,33 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void DestroyInventory();
 
+	/** Add weapon to character inventory. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void AddWeapon(APZWeaponBase* Weap);
 
+	/** Remove weapon from character inventory. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void RemoveWeapon(APZWeaponBase* Weap);
 
+	/** Equip weapon from character inventory. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void EquipWeapon(APZWeaponBase* Weap);
 
+	/** List of default weapons to spawn in character inventory. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
 	TArray<TSubclassOf<APZWeaponBase>> DefaultInventoryClasses;
 
+	/** List of items in player inventory. */
 	UPROPERTY(BlueprintReadOnly, Category = "Pawn")
 	TArray<APZWeaponBase*> Inventory;
 
+	/** Weapon currently equipped by character. */
 	UPROPERTY(BlueprintReadOnly, Category = "Pawn")
 	APZWeaponBase* Weapon;
 
+	/** Returns FirstPersonMesh subobject. */
 	FORCEINLINE USkeletalMeshComponent* GetFirstPersonMesh() const { return FirstPersonMesh; }
+
+	/** Returns FirstPersonCamera subobject. */
 	FORCEINLINE UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 };

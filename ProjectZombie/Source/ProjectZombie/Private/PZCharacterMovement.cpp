@@ -2,3 +2,7 @@
 
 #include "PZCharacterMovement.h"
 
+UPZCharacterMovement::UPZCharacterMovement()
+{
+
+}

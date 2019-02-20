@@ -22,7 +22,4 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta=(AllowPrivateAccess="true"))
 	USphereComponent* SphereCollisionComp;
-
-public:
-
 };
