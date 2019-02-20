@@ -26,10 +26,15 @@ public:
 	FName BlackboardKey = "PlayerTarget";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
-	FName LocationKey;
+	FName LocationKey = "Waypoint";
 
 	UPROPERTY(Transient)
-	TArray<AActor*> AITargetPoints;
+	TArray<AActor*> AIWaypoints;
+
+	inline TArray<AActor*> GetWaypoints() const 
+	{
+		return AIWaypoints;
+	}
 
 private:
 	UPROPERTY(Transient)
