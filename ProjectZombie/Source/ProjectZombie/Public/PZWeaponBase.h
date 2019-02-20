@@ -16,6 +16,9 @@ class PROJECTZOMBIE_API APZWeaponBase : public AActor
 public:	
 	APZWeaponBase();
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	FName HandsAttachSocket;
+
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* Mesh;

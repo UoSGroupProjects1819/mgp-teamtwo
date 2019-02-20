@@ -10,12 +10,10 @@ APZWeaponBase::APZWeaponBase()
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh1P"));
 	Mesh->SetupAttachment(GetRootComponent());
 	Mesh->SetOnlyOwnerSee(true);
-	Mesh->bCastDynamicShadow = false;
-	Mesh->CastShadow = false;
 	Mesh->bSelfShadowOnly = true;
 	Mesh->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
 
-	PrimaryActorTick.bCanEverTick = true;
+	bOnlyRelevantToOwner = true;
 }
 
 void APZWeaponBase::StartFire()
@@ -40,12 +38,18 @@ void APZWeaponBase::StopAltFire()
 
 void APZWeaponBase::AttachToOwner()
 {
-
+	if (PZOwner)
+	{
+		Mesh->AttachToComponent(PZOwner->GetFirstPersonMesh(), FAttachmentTransformRules::KeepRelativeTransform, HandsAttachSocket);
+	}
 }
 
 void APZWeaponBase::DetachFromOwner()
 {
+	if (PZOwner)
+	{
 
+	}
 }
 
 void APZWeaponBase::GivenTo(APZCharacter* NewOwner)

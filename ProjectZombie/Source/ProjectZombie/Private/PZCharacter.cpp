@@ -20,23 +20,30 @@ APZCharacter::APZCharacter()
 	FirstPersonMesh->SetOnlyOwnerSee(true);
 	FirstPersonMesh->bCastDynamicShadow = false;
 	FirstPersonMesh->CastShadow = false;
+	FirstPersonMesh->bReceivesDecals = false;
 	FirstPersonMesh->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
+	FirstPersonMesh->PrimaryComponentTick.AddPrerequisite(this, PrimaryActorTick);
 
+	Health = 0;
 	MaxHealth = 100;
-
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
 void APZCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (Health == 0)
+	{
+		Health = MaxHealth;
+	}
+
+	CreateInventory();
 }
 
 void APZCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void APZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -95,7 +102,18 @@ void APZCharacter::CreateInventory()
 {
 	for (int32 i = 0; i < DefaultInventoryClasses.Num(); i++)
 	{
+		if (DefaultInventoryClasses[i])
+		{
+			FActorSpawnParameters SpawnInfo;
+			SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			APZWeaponBase* Weap =  GetWorld()->SpawnActor<APZWeaponBase>(DefaultInventoryClasses[i], SpawnInfo);
+			AddWeapon(Weap);
+		}
+	}
 
+	if (Inventory.Num() > 0)
+	{
+		EquipWeapon(Inventory[0]);
 	}
 }
 
@@ -108,8 +126,8 @@ void APZCharacter::AddWeapon(APZWeaponBase* Weap)
 {
 	if (Weap)
 	{
-		Inventory.AddUnique(Weap);
 		Weap->GivenTo(this);
+		Inventory.AddUnique(Weap);
 	}
 }
 
@@ -117,8 +135,8 @@ void APZCharacter::RemoveWeapon(APZWeaponBase* Weap)
 {
 	if (Weap)
 	{
-		Inventory.Remove(Weap);
 		Weap->Removed();
+		Inventory.Remove(Weap);
 	}
 }
 
@@ -126,6 +144,7 @@ void APZCharacter::EquipWeapon(APZWeaponBase* Weap)
 {
 	if (Weap)
 	{
+		Weap->AttachToOwner();
 		Weapon = Weap;
 	}
 }

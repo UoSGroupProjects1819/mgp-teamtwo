@@ -45,9 +45,11 @@ public:
 	/** Handles strafing movement left */
 	void MoveLeft(float Value);
 
+	/** Spawn weapon in character inventory. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void CreateInventory();
 
+	/** Remove all weapons from character inventory. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void DestroyInventory();
 

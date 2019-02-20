@@ -4,6 +4,8 @@
 
 APZCharacterBase::APZCharacterBase()
 {
+	Health = 0;
+	MaxHealth = 0;
 	PrimaryActorTick.bCanEverTick = true;
 }
 
