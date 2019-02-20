@@ -4,7 +4,8 @@
 #include "Perception/PawnSensingComponent.h"
 #include "PZZombieAI.h"
 
-APZZombie::APZZombie()
+APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	PawnSensingComp->SetPeripheralVisionAngle(90.0f);

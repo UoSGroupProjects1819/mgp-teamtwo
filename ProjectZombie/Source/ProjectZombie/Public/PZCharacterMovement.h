@@ -13,4 +13,12 @@ class PROJECTZOMBIE_API UPZCharacterMovement : public UCharacterMovementComponen
 	
 public:
 	UPZCharacterMovement();
+
+	virtual float GetMaxSpeed() const override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Movement: Sprint", meta = (DisplayName = "Sprint Speed"))
+	float SprintSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character Movement: Sprint", meta = (DisplayName = "Sprint"))
+	bool bIsSprinting;
 };

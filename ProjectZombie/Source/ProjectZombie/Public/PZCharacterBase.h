@@ -12,7 +12,7 @@ class PROJECTZOMBIE_API APZCharacterBase : public ACharacter
 	GENERATED_BODY()
 
 public:
-	APZCharacterBase();
+	APZCharacterBase(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
 

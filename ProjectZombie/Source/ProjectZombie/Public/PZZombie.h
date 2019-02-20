@@ -15,7 +15,7 @@ class PROJECTZOMBIE_API APZZombie : public APZCharacterBase
 	GENERATED_BODY()
 	
 public:
-	APZZombie();
+	APZZombie(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
 

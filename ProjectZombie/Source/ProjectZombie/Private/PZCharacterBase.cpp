@@ -2,7 +2,8 @@
 
 #include "PZCharacterBase.h"
 
-APZCharacterBase::APZCharacterBase()
+APZCharacterBase::APZCharacterBase(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	Health = 0;
 	MaxHealth = 0;

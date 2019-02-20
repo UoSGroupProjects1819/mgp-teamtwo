@@ -18,7 +18,7 @@ class PROJECTZOMBIE_API APZCharacter : public APZCharacterBase
 	GENERATED_BODY()
 
 public:
-	APZCharacter();
+	APZCharacter(const FObjectInitializer& ObjectInitializer);
 
 private:
 	/** First person mesh */
@@ -59,6 +59,14 @@ public:
 
 	/** Handles strafing movement left */
 	void MoveLeft(float Value);
+
+	/** Make the character sprint */
+	UFUNCTION(BlueprintCallable, Category = "Pawm")
+	virtual void Sprint();
+
+	/** Stop the character from sprinting. */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	virtual void StopSprinting();
 
 	/** Call start fire on current weapon */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")

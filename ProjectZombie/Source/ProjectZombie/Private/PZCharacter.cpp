@@ -9,7 +9,8 @@
 #include "PZWeaponBase.h"
 #include "PZCharacterMovement.h"
 
-APZCharacter::APZCharacter()
+APZCharacter::APZCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UPZCharacterMovement>(ACharacter::CharacterMovementComponentName))
 {
 	// Create a CameraComponent
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
@@ -27,7 +28,7 @@ APZCharacter::APZCharacter()
 	FirstPersonMesh->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
 	FirstPersonMesh->PrimaryComponentTick.AddPrerequisite(this, PrimaryActorTick);
 
-	//PZCharacterMovement = Cast<UPZCharacterMovement>(GetCharacterMovement());
+	PZCharacterMovement = Cast<UPZCharacterMovement>(GetCharacterMovement());
 
 	// Create a PawnNoiseEmitterComponent which will be used to emit sounds to AI characters.
 	PawnNoiseEmitterComp = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("PawnNoiseEmitterComp"));
@@ -66,6 +67,8 @@ void APZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("LookUp", this, &APZCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APZCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APZCharacter::StopJumping);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &APZCharacter::Sprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &APZCharacter::StopSprinting);
 
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APZCharacter::StartFire);
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &APZCharacter::StopAltFire);
@@ -119,6 +122,22 @@ void APZCharacter::MoveRight(float Value)
 void APZCharacter::MoveLeft(float Value)
 {
 	MoveRight(Value * -1);
+}
+
+void APZCharacter::Sprint()
+{
+	if (PZCharacterMovement)
+	{
+		PZCharacterMovement->bIsSprinting = true;
+	}
+}
+
+void APZCharacter::StopSprinting()
+{
+	if (PZCharacterMovement)
+	{
+		PZCharacterMovement->bIsSprinting = false;
+	}
 }
 
 void APZCharacter::StartFire()
