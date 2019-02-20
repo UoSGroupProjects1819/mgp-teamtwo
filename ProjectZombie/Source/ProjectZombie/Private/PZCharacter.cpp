@@ -47,6 +47,8 @@ void APZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("MoveBackward", this, &APZCharacter::MoveBackward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &APZCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("MoveLeft", this, &APZCharacter::MoveLeft);
+	PlayerInputComponent->BindAxis("Turn", this, &APZCharacter::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("LookUp", this, &APZCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APZCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APZCharacter::StopJumping);
 }
