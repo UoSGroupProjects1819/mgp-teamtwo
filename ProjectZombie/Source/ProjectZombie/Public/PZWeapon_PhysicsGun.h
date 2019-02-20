@@ -16,6 +16,13 @@ class PROJECTZOMBIE_API APZWeapon_PhysicsGun : public APZWeaponBase
 public:
 	APZWeapon_PhysicsGun();
 
+	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void StartFire();
+	virtual void StopFire();
+	virtual void StartAltFire();
+	virtual void StopAltFire();
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* PickupLocation;

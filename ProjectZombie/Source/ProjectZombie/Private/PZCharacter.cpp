@@ -30,7 +30,7 @@ APZCharacter::APZCharacter()
 	//PZCharacterMovement = Cast<UPZCharacterMovement>(GetCharacterMovement());
 
 	// Create a PawnNoiseEmitterComponent which will be used to emit sounds to AI characters.
-	//PawnNoiseEmitterComp = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("PawnNoiseEmitterComp"));
+	PawnNoiseEmitterComp = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("PawnNoiseEmitterComp"));
 
 	Health = 0;
 	MaxHealth = 100;
@@ -66,6 +66,11 @@ void APZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("LookUp", this, &APZCharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APZCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APZCharacter::StopJumping);
+
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APZCharacter::StartFire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &APZCharacter::StopAltFire);
+	PlayerInputComponent->BindAction("AltFire", IE_Pressed, this, &APZCharacter::StartAltFire);
+	PlayerInputComponent->BindAction("AltFire", IE_Released, this, &APZCharacter::StopAltFire);
 }
 
 void APZCharacter::CreateNoise(USoundBase* Sound, float Volume)
@@ -114,6 +119,38 @@ void APZCharacter::MoveRight(float Value)
 void APZCharacter::MoveLeft(float Value)
 {
 	MoveRight(Value * -1);
+}
+
+void APZCharacter::StartFire()
+{
+	if (Weapon)
+	{
+		Weapon->StartFire();
+	}
+}
+
+void APZCharacter::StopFire()
+{
+	if (Weapon)
+	{
+		Weapon->StopFire();
+	}
+}
+
+void APZCharacter::StartAltFire()
+{
+	if (Weapon)
+	{
+		Weapon->StartAltFire();
+	}
+}
+
+void APZCharacter::StopAltFire()
+{
+	if (Weapon)
+	{
+		Weapon->StopAltFire();
+	}
 }
 
 void APZCharacter::CreateInventory()

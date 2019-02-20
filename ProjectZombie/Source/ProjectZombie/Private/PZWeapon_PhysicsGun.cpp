@@ -17,6 +17,38 @@ APZWeapon_PhysicsGun::APZWeapon_PhysicsGun()
 	bIsCarrying = false;
 }
 
+void APZWeapon_PhysicsGun::Tick(float DeltaSeconds)
+{
+	if (bIsCarrying)
+	{
+		const FVector NewLocation = PickupLocation->GetComponentLocation();
+		PhysicsHandleComp->SetTargetLocation(NewLocation);
+	}
+}
+
+void APZWeapon_PhysicsGun::StartFire()
+{
+	OnPickup();
+}
+
+void APZWeapon_PhysicsGun::StopFire()
+{
+
+}
+
+void APZWeapon_PhysicsGun::StartAltFire()
+{
+	if (bIsCarrying)
+	{
+		OnLaunched();
+	}
+}
+
+void APZWeapon_PhysicsGun::StopAltFire()
+{
+
+}
+
 void APZWeapon_PhysicsGun::OnPickup()
 {
 	if (!bIsCarrying)
@@ -34,13 +66,17 @@ void APZWeapon_PhysicsGun::OnPickup()
 
 			const FVector EndTrace = StartTrace + ShootDir * PickupDistance;
 			const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
-
-			UPrimitiveComponent* PhysicsComponent = Impact.GetComponent();
-			if (PhysicsComponent != nullptr && PhysicsComponent->IsSimulatingPhysics())
+			if (Impact.bBlockingHit)
 			{
-				PhysicsHandleComp->GrabComponentAtLocationWithRotation(PhysicsComponent, Impact.BoneName, PhysicsComponent->GetComponentLocation(), PhysicsComponent->GetComponentRotation());
-				PickedUpObject = PhysicsComponent;
-				bIsCarrying = true;
+				UE_LOG(LogTemp, Display, TEXT("Hit"))
+				UPrimitiveComponent* PhysicsComponent = Impact.GetComponent();
+				if (PhysicsComponent != nullptr && PhysicsComponent->IsSimulatingPhysics())
+				{
+					PhysicsHandleComp->GrabComponentAtLocationWithRotation(PhysicsComponent, NAME_None, PhysicsComponent->GetComponentLocation(), PhysicsComponent->GetComponentRotation());
+					PickedUpObject = PhysicsComponent;
+					bIsCarrying = true;
+					UE_LOG(LogTemp, Display, TEXT("Pickup"))
+				}
 			}
 		}
 	}
@@ -53,6 +89,7 @@ void APZWeapon_PhysicsGun::OnDropped()
 		PhysicsHandleComp->ReleaseComponent();
 		PickedUpObject = nullptr;
 		bIsCarrying = false;
+		UE_LOG(LogTemp, Display, TEXT("Release"))
 	}
 }
 
@@ -62,5 +99,6 @@ void APZWeapon_PhysicsGun::OnLaunched()
 	{
 		const FVector Direction = GetActorForwardVector();
 		PickedUpObject->AddImpulse(Direction * LaunchVelocity, NAME_None, true);
+		OnDropped();
 	}
 }

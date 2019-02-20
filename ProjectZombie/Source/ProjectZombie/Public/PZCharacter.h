@@ -60,6 +60,22 @@ public:
 	/** Handles strafing movement left */
 	void MoveLeft(float Value);
 
+	/** Call start fire on current weapon */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	virtual void StartFire();
+
+	/** Call stop fire on current weapon */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	virtual void StopFire();
+
+	/** Call start alt fire on current weapon */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	virtual void StartAltFire();
+
+	/** Call stop alt fire on current weapon */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	virtual void StopAltFire();
+
 	/** Spawn weapon in character inventory. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void CreateInventory();

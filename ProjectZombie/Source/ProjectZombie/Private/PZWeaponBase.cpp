@@ -1,9 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PZWeaponBase.h"
+#include "DrawDebugHelpers.h"
 #include "PZCharacter.h"
 
-#define COLLISION_WEAPON ECC_EngineTraceChannel1
+#define COLLISION_WEAPON ECC_GameTraceChannel1
 
 APZWeaponBase::APZWeaponBase()
 {
@@ -73,6 +74,7 @@ FHitResult APZWeaponBase::WeaponTrace(const FVector& StartTrace, const FVector& 
 	TraceParams.bReturnPhysicalMaterial = true;
 
 	FHitResult Hit(ForceInit);
+	DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 1, 0, 1);
 	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, COLLISION_WEAPON, TraceParams);
 	return Hit;
 }
