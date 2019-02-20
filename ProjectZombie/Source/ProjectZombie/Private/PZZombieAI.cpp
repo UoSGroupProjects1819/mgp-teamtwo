@@ -21,8 +21,15 @@ void APZZombieAI::Possess(APawn* InPawn)
 		if (AIZombie->BehaviorTree->BlackboardAsset)
 		{
 			BlackboardComp->InitializeBlackboard(*(AIZombie->BehaviorTree->BlackboardAsset));
+			BehaviorComp->StartTree(*AIZombie->BehaviorTree);
 		}
 	}
+}
 
-	BehaviorComp->StartTree(*AIZombie->BehaviorTree);
+void APZZombieAI::OnSight(APawn* InPawn)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsObject(BlackboardKey, InPawn);
+	}
 }

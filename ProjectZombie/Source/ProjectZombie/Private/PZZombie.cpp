@@ -1,13 +1,36 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PZZombie.h"
+#include "Perception/PawnSensingComponent.h"
 #include "PZZombieAI.h"
 
 APZZombie::APZZombie()
 {
-	AIControllerClass = APZZombieAI::StaticClass();
+	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
+	PawnSensingComp->SetPeripheralVisionAngle(90.0f);
 
+	AIControllerClass = APZZombieAI::StaticClass();
 	MaxHealth = 50;
+}
+
+void APZZombie::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (PawnSensingComp)
+	{
+		PawnSensingComp->OnSeePawn.AddDynamic(this, &APZZombie::OnSeePlayer);
+	}
+}
+
+void APZZombie::OnSeePlayer(APawn* Pawn)
+{
+	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
+	if (AIController)
+	{
+		UE_LOG(LogTemp, Display, TEXT("I See You!"))
+		AIController->OnSight(Pawn);
+	}
 }
 
 void APZZombie::OnMelee()

@@ -7,6 +7,7 @@
 #include "PZZombie.generated.h"
 
 class UBehaviorTree;
+class UPawnSensingComponent;
 
 UCLASS()
 class PROJECTZOMBIE_API APZZombie : public APZCharacterBase
@@ -16,8 +17,18 @@ class PROJECTZOMBIE_API APZZombie : public APZCharacterBase
 public:
 	APZZombie();
 
+	virtual void BeginPlay() override;
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	UPawnSensingComponent* PawnSensingComp;
+
+public:
 	UPROPERTY(EditAnywhere, Category = "AI")
 	UBehaviorTree* BehaviorTree;
+
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void OnSeePlayer(APawn* Pawn);
 
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void OnMelee();

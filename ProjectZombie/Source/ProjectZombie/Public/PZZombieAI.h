@@ -16,7 +16,14 @@ class PROJECTZOMBIE_API APZZombieAI : public AAIController
 public:
 	APZZombieAI();
 
+public:
 	virtual void Possess(APawn* InPawn) override;
+	
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	virtual void OnSight(APawn* InPawn);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
+	FName BlackboardKey = "PlayerTarget";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	FName LocationKey;
