@@ -11,9 +11,20 @@ EBTNodeResult::Type UBTTaskPatrol::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	if (AIController)
 	{
 		UBlackboardComponent* BlackboardComp = AIController->GetBlackboardComp();
-		APZWaypoint* CurrentWaypoint = Cast<APZWaypoint>(BlackboardComp->GetValueAsObject("LocationToGo"));
+		APZWaypoint* CurrentWaypoint = Cast<APZWaypoint>(BlackboardComp->GetValueAsObject("Waypoint"));
 
-		TArray<AActor*> Waypoints 
+		TArray<AActor*> Waypoints = AIController->GetWaypoints();
+		int32 RandomIndex;
+		APZWaypoint* NextWaypoint = nullptr;
+		do
+		{
+			RandomIndex = FMath::RandRange(0, Waypoints.Num() -1);
+			NextWaypoint = Cast<APZWaypoint>(Waypoints[RandomIndex]);
+
+		} while (CurrentWaypoint == NextWaypoint);
+
+		BlackboardComp->SetValueAsObject("Waypoint", NextWaypoint);
+		return EBTNodeResult::Succeeded;
 	}
 
 	return EBTNodeResult::Failed;

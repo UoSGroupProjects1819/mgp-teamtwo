@@ -23,10 +23,10 @@ public:
 	virtual void OnSight(APawn* InPawn);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
-	FName BlackboardKey = "PlayerTarget";
+	FName PlayerKey = "PlayerTarget";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
-	FName LocationKey = "Waypoint";
+	FName WaypointKey = "Waypoint";
 
 	UPROPERTY(Transient)
 	TArray<AActor*> AIWaypoints;

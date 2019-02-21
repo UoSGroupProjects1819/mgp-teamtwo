@@ -4,7 +4,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Kismet/GameplayStatics.h"
 #include "PZZombie.h"
+#include "PZWaypoint.h"
 
 APZZombieAI::APZZombieAI()
 {
@@ -15,6 +17,9 @@ APZZombieAI::APZZombieAI()
 void APZZombieAI::Possess(APawn* InPawn)
 {
 	Super::Possess(InPawn);
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APZWaypoint::StaticClass(), AIWaypoints);
+
 	APZZombie* AIZombie = Cast<APZZombie>(InPawn);
 	if (AIZombie)
 	{
@@ -30,6 +35,6 @@ void APZZombieAI::OnSight(APawn* InPawn)
 {
 	if (BlackboardComp)
 	{
-		BlackboardComp->SetValueAsObject(BlackboardKey, InPawn);
+		BlackboardComp->SetValueAsObject(PlayerKey, InPawn);
 	}
 }
