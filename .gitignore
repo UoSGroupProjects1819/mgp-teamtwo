@@ -40,5 +40,6 @@ ProjectZombie/*.vs
 # Ignore any saved local files
 **/ProjectZombie/Saved/**
 
-
+# Ignore starter content for now
+**/StarterContent/**
 

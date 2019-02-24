@@ -28,7 +28,7 @@ float APZCharacterBase::TakeDamage(float Damage, struct FDamageEvent const& Dama
 		Health -= ResultDamage;
 		if (Health <= 0)
 		{
-			// TODO: Die
+			Die(DamageEvent, EventInstigator, DamageCauser);
 		}
 		else
 		{
@@ -37,5 +37,23 @@ float APZCharacterBase::TakeDamage(float Damage, struct FDamageEvent const& Dama
 	}
 
 	return float(ResultDamage);
+}
+
+bool APZCharacterBase::Die(FDamageEvent const& DamageEvent, AController* KIller, AActor* DamageCauser)
+{
+	Health = FMath::Min<int32>(0.0f, Health);
+
+	PlayDeath();
+	return true;
+}
+
+void APZCharacterBase::PlayDeath()
+{
+	PlayRagdoll();
+}
+
+void APZCharacterBase::PlayRagdoll()
+{
+
 }
 

@@ -20,6 +20,14 @@ public:
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 	/** Called when we run out of health */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	virtual bool Die(FDamageEvent const& DamageEvent, AController* KIller, AActor* DamageCauser);
+
+	/** Simulate pawn death */
+	virtual void PlayDeath();
+
+	/** Simulate pawn ragdoll */
+	virtual void PlayRagdoll();
 
 protected:
 	/** Current health of the pawn */
