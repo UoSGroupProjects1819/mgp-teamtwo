@@ -49,6 +49,7 @@ bool APZCharacterBase::Die(FDamageEvent const& DamageEvent, AController* KIller,
 
 void APZCharacterBase::PlayDeath()
 {
+	SetLifeSpan(0.15f);
 	PlayRagdoll();
 }
 
