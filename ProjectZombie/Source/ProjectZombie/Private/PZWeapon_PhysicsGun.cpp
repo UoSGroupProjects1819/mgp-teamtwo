@@ -15,6 +15,8 @@ APZWeapon_PhysicsGun::APZWeapon_PhysicsGun()
 	PickupDistance = 500.0f;
 	LaunchVelocity = 1200.0f;
 	bIsCarrying = false;
+
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void APZWeapon_PhysicsGun::Tick(float DeltaSeconds)
