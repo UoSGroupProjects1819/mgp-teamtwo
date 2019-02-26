@@ -48,16 +48,24 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	virtual void CreateNoise(USoundBase* Sound, float Volume);
 
+	/** Sound played by footsteps. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
+	USoundBase* FootstepSound;
+
 	/** Handles moving forward */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void MoveForward(float Value);
 
 	/** Handles moving backward */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void MoveBackward(float Value);
 
 	/** Handles strafing movement right */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void MoveRight(float Value);
 
 	/** Handles strafing movement left */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void MoveLeft(float Value);
 
 	/** Make the character sprint */

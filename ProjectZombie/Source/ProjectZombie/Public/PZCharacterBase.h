@@ -24,9 +24,11 @@ public:
 	virtual bool Die(FDamageEvent const& DamageEvent, AController* KIller, AActor* DamageCauser);
 
 	/** Simulate pawn death */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	virtual void PlayDeath();
 
 	/** Simulate pawn ragdoll */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	virtual void PlayRagdoll();
 
 protected:
