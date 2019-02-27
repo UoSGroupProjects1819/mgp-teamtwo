@@ -4,6 +4,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
 #include "PZZombieAI.h"
+#include "PZPhysicsObject.h"
 
 APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -13,7 +14,8 @@ APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 
 	AIControllerClass = APZZombieAI::StaticClass();
 	MaxHealth = 50;
-	MeleeRange = 200.0f;
+	MeleeRange = 150.0f;
+	MeleeDamage = 25.0f;
 }
 
 void APZZombie::BeginPlay()
@@ -23,6 +25,7 @@ void APZZombie::BeginPlay()
 	if (PawnSensingComp)
 	{
 		PawnSensingComp->OnSeePawn.AddDynamic(this, &APZZombie::OnSeePlayer);
+		PawnSensingComp->OnHearNoise.AddDynamic(this, &APZZombie::OnHearNoise);
 	}
 }
 
@@ -41,16 +44,16 @@ void APZZombie::OnSeePlayer(APawn* Pawn)
 	}
 }
 
-void APZZombie::OnHearNoise(AActor* OtherActor, const FVector& Location, float Volume)
+void APZZombie::OnHearNoise(APawn* OtherActor, const FVector& Location, float Volume)
 {
 	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
 	if (AIController)
 	{
-		APawn* Pawn = Cast<APawn>(OtherActor);
-		if (Pawn != this)
+		APZPhysicsObject* PhysicsActor = Cast<APZPhysicsObject>(OtherActor);
+		if (PhysicsActor != nullptr)
 		{
 			UE_LOG(LogTemp, Display, TEXT("I Hear You!"));
-			AIController->OnHear(OtherActor);
+			AIController->OnHear(PhysicsActor);
 		}
 	}
 }

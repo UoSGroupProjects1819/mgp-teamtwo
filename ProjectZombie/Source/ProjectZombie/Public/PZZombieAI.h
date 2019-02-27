@@ -7,6 +7,7 @@
 #include "PZZombieAI.generated.h"
 
 class UBehaviorTreeComponent;
+class APZPhysicsObject;
 
 UCLASS()
 class PROJECTZOMBIE_API APZZombieAI : public AAIController
@@ -23,7 +24,7 @@ public:
 	virtual void OnSight(APawn* InPawn);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	virtual void OnHear(AActor* OtherActor);
+	virtual void OnHear(APZPhysicsObject* OtherActor);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
 	FName PlayerKey = "PlayerTarget";

@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PZZombie.h"
 #include "PZWaypoint.h"
+#include "PZPhysicsObject.h"
 
 APZZombieAI::APZZombieAI()
 {
@@ -39,7 +40,7 @@ void APZZombieAI::OnSight(APawn* InPawn)
 	}
 }
 
-void APZZombieAI::OnHear(AActor* OtherActor)
+void APZZombieAI::OnHear(APZPhysicsObject* OtherActor)
 {
 	if (BlackboardComp)
 	{
