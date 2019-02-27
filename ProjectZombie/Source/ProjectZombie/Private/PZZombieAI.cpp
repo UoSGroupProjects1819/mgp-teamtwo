@@ -38,3 +38,11 @@ void APZZombieAI::OnSight(APawn* InPawn)
 		BlackboardComp->SetValueAsObject(PlayerKey, InPawn);
 	}
 }
+
+void APZZombieAI::OnHear(AActor* OtherActor)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsObject(SoundKey, OtherActor);
+	}
+}

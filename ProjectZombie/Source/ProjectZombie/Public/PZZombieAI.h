@@ -22,11 +22,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	virtual void OnSight(APawn* InPawn);
 
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	virtual void OnHear(AActor* OtherActor);
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
 	FName PlayerKey = "PlayerTarget";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	FName WaypointKey = "Waypoint";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
+	FName SoundKey = "SoundTarget";
 
 	UPROPERTY(Transient)
 	TArray<AActor*> AIWaypoints;

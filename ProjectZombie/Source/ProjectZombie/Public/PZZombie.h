@@ -30,6 +30,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	void OnSeePlayer(APawn* Pawn);
 
+	UFUNCTION(BlueprintCallable, Category = "AI")
+	void OnHearNoise(AActor* OtherActor, const FVector& Location, float Volume);
+
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void OnMelee();
 

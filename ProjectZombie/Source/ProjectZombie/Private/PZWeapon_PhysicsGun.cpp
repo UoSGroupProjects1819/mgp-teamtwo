@@ -99,7 +99,9 @@ void APZWeapon_PhysicsGun::OnLaunched()
 {
 	if (PickedUpObject)
 	{
-		const FVector Direction = GetActorForwardVector();
+		const FVector LaunchDirection = PZOwner->GetActorForwardVector();
+		const FRotator LauncRotation = PZOwner->GetControlRotation();
+		const FVector Direction = LaunchDirection + LauncRotation.Vector();
 		PickedUpObject->AddImpulse(Direction * LaunchVelocity, NAME_None, true);
 		OnDropped();
 	}

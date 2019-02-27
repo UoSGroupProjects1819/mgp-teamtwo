@@ -2,6 +2,7 @@
 
 #include "PZZombie.h"
 #include "Perception/PawnSensingComponent.h"
+#include "DrawDebugHelpers.h"
 #include "PZZombieAI.h"
 
 APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
@@ -12,6 +13,7 @@ APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 
 	AIControllerClass = APZZombieAI::StaticClass();
 	MaxHealth = 50;
+	MeleeRange = 200.0f;
 }
 
 void APZZombie::BeginPlay()
@@ -29,8 +31,27 @@ void APZZombie::OnSeePlayer(APawn* Pawn)
 	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
 	if (AIController)
 	{
-		UE_LOG(LogTemp, Display, TEXT("I See You!"))
+		UE_LOG(LogTemp, Display, TEXT("I See You!"));
 		AIController->OnSight(Pawn);
+		float Dist = GetDistanceTo(Pawn);
+		if (Dist == MeleeRange)
+		{
+			OnMelee();
+		}
+	}
+}
+
+void APZZombie::OnHearNoise(AActor* OtherActor, const FVector& Location, float Volume)
+{
+	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
+	if (AIController)
+	{
+		APawn* Pawn = Cast<APawn>(OtherActor);
+		if (Pawn != this)
+		{
+			UE_LOG(LogTemp, Display, TEXT("I Hear You!"));
+			AIController->OnHear(OtherActor);
+		}
 	}
 }
 
@@ -60,6 +81,7 @@ FHitResult APZZombie::MeleeTrace(const FVector& StartTrace, const FVector& EndTr
 	TraceParams.bTraceAsyncScene = true;
 
 	FHitResult Hit(ForceInit);
-	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECC_GameTraceChannel1, TraceParams);
+	DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Green, false, 1, 0, 1);
+	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECC_GameTraceChannel2, TraceParams);
 	return Hit;
 }
