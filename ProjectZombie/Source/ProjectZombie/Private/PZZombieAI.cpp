@@ -40,10 +40,10 @@ void APZZombieAI::OnSight(APawn* InPawn)
 	}
 }
 
-void APZZombieAI::OnHear(APZPhysicsObject* OtherActor)
+void APZZombieAI::OnHear(APawn* InPawn)
 {
 	if (BlackboardComp)
 	{
-		BlackboardComp->SetValueAsObject(SoundKey, OtherActor);
+		BlackboardComp->SetValueAsObject(SoundKey, InPawn);
 	}
 }

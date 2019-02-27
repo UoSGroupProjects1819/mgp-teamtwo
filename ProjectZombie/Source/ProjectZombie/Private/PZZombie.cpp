@@ -4,7 +4,6 @@
 #include "Perception/PawnSensingComponent.h"
 #include "DrawDebugHelpers.h"
 #include "PZZombieAI.h"
-#include "PZPhysicsObject.h"
 
 APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -29,52 +28,50 @@ void APZZombie::BeginPlay()
 	}
 }
 
-void APZZombie::OnSeePlayer(APawn* Pawn)
+void APZZombie::OnSeePlayer(APawn* InPawn)
 {
 	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
 	if (AIController)
 	{
 		UE_LOG(LogTemp, Display, TEXT("I See You!"));
-		AIController->OnSight(Pawn);
-		float Dist = GetDistanceTo(Pawn);
-		if (Dist == MeleeRange)
-		{
-			OnMelee();
-		}
+		AIController->OnSight(InPawn);
 	}
 }
 
-void APZZombie::OnHearNoise(APawn* OtherActor, const FVector& Location, float Volume)
+void APZZombie::OnHearNoise(APawn* InPawn, const FVector& Location, float Volume)
 {
 	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
-	if (AIController && OtherActor != this)
+	if (AIController && InPawn != this)
 	{
-		APZPhysicsObject* PhysicsActor = Cast<APZPhysicsObject>(OtherActor);
-		if (PhysicsActor != nullptr)
-		{
-			UE_LOG(LogTemp, Display, TEXT("I Hear You!"));
-			AIController->OnHear(PhysicsActor);
-		}
+		UE_LOG(LogTemp, Display, TEXT("I Hear You!"));
+		AIController->OnHear(InPawn);
 	}
 }
 
 void APZZombie::OnMelee()
 {
-	FVector MeleeLoc = GetControlRotation().Vector();
-	FRotator MeleeRot = GetControlRotation();
-	const FVector MeleeDir = MeleeRot.Vector();
-
-	FVector StartTrace = FVector::ZeroVector;
-	StartTrace = StartTrace + MeleeDir * ((GetActorLocation() - StartTrace) | MeleeDir);
-
-	const FVector EndTrace = StartTrace + MeleeDir * MeleeRange;
-	const FHitResult Impact = MeleeTrace(StartTrace, EndTrace);
-
-	AActor* DamagedActor = Impact.GetActor();
-	if (DamagedActor != nullptr && DamagedActor != this)
+	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
+	if (AIController)
 	{
-		FDamageEvent MeleeDamageEvent(MeleeDamageType);
-		DamagedActor->TakeDamage(MeleeDamage, MeleeDamageEvent, Controller, this);
+		FVector MeleeDir = FVector::ZeroVector;
+		FVector StartTrace = FVector::ZeroVector;
+
+		FRotator MeleeRot = FRotator::ZeroRotator;
+		AIController->GetPlayerViewPoint(StartTrace, MeleeRot);
+		MeleeDir = MeleeRot.Vector();
+
+		StartTrace = StartTrace + MeleeDir * ((GetActorLocation() - StartTrace) | MeleeDir);
+
+		const FVector EndTrace = StartTrace + MeleeDir * MeleeRange;
+		const FHitResult Impact = MeleeTrace(StartTrace, EndTrace);
+
+		AActor* DamagedActor = Impact.GetActor();
+
+		if (DamagedActor != nullptr && DamagedActor != this)
+		{
+			FDamageEvent MeleeDamageEvent(MeleeDamageType);
+			DamagedActor->TakeDamage(MeleeDamage, MeleeDamageEvent, GetController(), this);
+		}
 	}
 }
 

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Actor.h"
 #include "PZPhysicsObject.generated.h"
 
 class USphereComponent;
 class UPawnNoiseEmitterComponent;
 
 UCLASS()
-class PROJECTZOMBIE_API APZPhysicsObject : public APawn
+class PROJECTZOMBIE_API APZPhysicsObject : public AActor
 {
 	GENERATED_BODY()
 	
@@ -23,7 +23,4 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	USphereComponent* SphereCollisionComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	UPawnNoiseEmitterComponent* NoiseEmitter;
 };

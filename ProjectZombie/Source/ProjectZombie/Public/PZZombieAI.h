@@ -20,11 +20,11 @@ public:
 public:
 	virtual void Possess(APawn* InPawn) override;
 	
-	UFUNCTION(BlueprintCallable, Category = "AI")
+	UFUNCTION()
 	virtual void OnSight(APawn* InPawn);
 
-	UFUNCTION(BlueprintCallable, Category = "AI")
-	virtual void OnHear(APZPhysicsObject* OtherActor);
+	UFUNCTION()
+	virtual void OnHear(APawn* OtherActor);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
 	FName PlayerKey = "PlayerTarget";

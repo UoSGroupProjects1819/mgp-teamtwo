@@ -28,10 +28,10 @@ public:
 	UBehaviorTree* BehaviorTree;
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void OnSeePlayer(APawn* Pawn);
+	void OnSeePlayer(APawn* InPawn);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void OnHearNoise(APawn* OtherActor, const FVector& Location, float Volume);
+	void OnHearNoise(APawn* InPawn, const FVector& Location, float Volume);
 
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void OnMelee();

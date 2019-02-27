@@ -25,6 +25,8 @@ float APZCharacterBase::TakeDamage(float Damage, struct FDamageEvent const& Dama
 	int32 ResultDamage = FMath::TruncToInt(Damage);
 	if (ResultDamage > 0)
 	{
+
+		UE_LOG(LogTemp, Display, TEXT("%s::TakeDamage() %d Class:%s Causer:%s"), *GetName(), int32(Damage), *GetNameSafe(DamageEvent.DamageTypeClass), *GetNameSafe(DamageCauser));
 		Health -= ResultDamage;
 		if (Health <= 0)
 		{
