@@ -49,7 +49,7 @@ void APZWeaponBase::DetachFromOwner()
 {
 	if (PZOwner)
 	{
-
+		Mesh->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
 	}
 }
 

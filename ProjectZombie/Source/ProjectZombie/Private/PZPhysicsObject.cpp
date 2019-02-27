@@ -2,6 +2,7 @@
 
 #include "PZPhysicsObject.h"
 #include "Components/SphereComponent.h"
+#include "Components/PawnNoiseEmitterComponent.h"
 
 APZPhysicsObject::APZPhysicsObject()
 {
@@ -9,6 +10,8 @@ APZPhysicsObject::APZPhysicsObject()
 	MeshComp->SetupAttachment(RootComponent);
 	MeshComp->SetSimulatePhysics(true);
 	MeshComp->GetBodyInstance()->bUseCCD = true;
+
+	NoiseEmitter = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 }
 
 

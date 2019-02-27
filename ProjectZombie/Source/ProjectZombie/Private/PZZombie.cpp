@@ -2,7 +2,9 @@
 
 #include "PZZombie.h"
 #include "Perception/PawnSensingComponent.h"
+#include "DrawDebugHelpers.h"
 #include "PZZombieAI.h"
+#include "PZPhysicsObject.h"
 
 APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -12,6 +14,8 @@ APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 
 	AIControllerClass = APZZombieAI::StaticClass();
 	MaxHealth = 50;
+	MeleeRange = 150.0f;
+	MeleeDamage = 25.0f;
 }
 
 void APZZombie::BeginPlay()
@@ -21,6 +25,7 @@ void APZZombie::BeginPlay()
 	if (PawnSensingComp)
 	{
 		PawnSensingComp->OnSeePawn.AddDynamic(this, &APZZombie::OnSeePlayer);
+		PawnSensingComp->OnHearNoise.AddDynamic(this, &APZZombie::OnHearNoise);
 	}
 }
 
@@ -29,8 +34,27 @@ void APZZombie::OnSeePlayer(APawn* Pawn)
 	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
 	if (AIController)
 	{
-		UE_LOG(LogTemp, Display, TEXT("I See You!"))
+		UE_LOG(LogTemp, Display, TEXT("I See You!"));
 		AIController->OnSight(Pawn);
+		float Dist = GetDistanceTo(Pawn);
+		if (Dist == MeleeRange)
+		{
+			OnMelee();
+		}
+	}
+}
+
+void APZZombie::OnHearNoise(APawn* OtherActor, const FVector& Location, float Volume)
+{
+	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
+	if (AIController && OtherActor != this)
+	{
+		APZPhysicsObject* PhysicsActor = Cast<APZPhysicsObject>(OtherActor);
+		if (PhysicsActor != nullptr)
+		{
+			UE_LOG(LogTemp, Display, TEXT("I Hear You!"));
+			AIController->OnHear(PhysicsActor);
+		}
 	}
 }
 
@@ -60,6 +84,7 @@ FHitResult APZZombie::MeleeTrace(const FVector& StartTrace, const FVector& EndTr
 	TraceParams.bTraceAsyncScene = true;
 
 	FHitResult Hit(ForceInit);
-	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECC_GameTraceChannel1, TraceParams);
+	DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Green, false, 1, 0, 1);
+	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECC_GameTraceChannel2, TraceParams);
 	return Hit;
 }
