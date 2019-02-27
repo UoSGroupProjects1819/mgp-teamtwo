@@ -47,7 +47,7 @@ void APZZombie::OnSeePlayer(APawn* Pawn)
 void APZZombie::OnHearNoise(APawn* OtherActor, const FVector& Location, float Volume)
 {
 	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
-	if (AIController)
+	if (AIController && OtherActor != this)
 	{
 		APZPhysicsObject* PhysicsActor = Cast<APZPhysicsObject>(OtherActor);
 		if (PhysicsActor != nullptr)
