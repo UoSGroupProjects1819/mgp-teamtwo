@@ -30,7 +30,14 @@ void APZWeapon_PhysicsGun::Tick(float DeltaSeconds)
 
 void APZWeapon_PhysicsGun::StartFire()
 {
-	OnPickup();
+	if (!bIsCarrying)
+	{
+		OnPickup();
+	}
+	else
+	{
+		OnDropped();
+	}
 }
 
 void APZWeapon_PhysicsGun::StopFire()
