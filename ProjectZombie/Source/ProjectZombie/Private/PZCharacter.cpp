@@ -140,6 +140,21 @@ void APZCharacter::StopSprinting()
 	}
 }
 
+void APZCharacter::StartCrouch()
+{
+	Crouch(false);
+}
+
+void APZCharacter::StopCrouch()
+{
+	UnCrouch(false);
+}
+
+void APZCharacter::ToggleCrouch()
+{
+	bIsCrouched ? UnCrouch(false) : Crouch(false);
+}
+
 void APZCharacter::StartFire()
 {
 	if (Weapon)

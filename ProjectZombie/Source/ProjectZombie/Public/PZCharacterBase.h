@@ -31,6 +31,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	virtual void PlayRagdoll();
 
+	/** Get pawn health */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Pawn")
+	int32 GetHealth() const;
+
+	/** Get pawn max health */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Pawn")
+	int32 GetMaxHealth() const;
+
 protected:
 	/** Current health of the pawn */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")

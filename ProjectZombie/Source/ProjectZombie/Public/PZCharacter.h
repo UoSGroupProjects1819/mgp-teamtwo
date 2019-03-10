@@ -76,6 +76,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	virtual void StopSprinting();
 
+	/** Make the character crouch. */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	virtual void StartCrouch();
+
+	/** Make the character crouch. */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	virtual void StopCrouch();
+
+	/** Make the character crouch, toggled version. */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	virtual void ToggleCrouch();
+
 	/** Call start fire on current weapon */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	virtual void StartFire();

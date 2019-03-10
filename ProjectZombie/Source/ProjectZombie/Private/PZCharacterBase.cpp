@@ -51,12 +51,24 @@ bool APZCharacterBase::Die(FDamageEvent const& DamageEvent, AController* KIller,
 
 void APZCharacterBase::PlayDeath()
 {
+	TearOff();
+	DetachFromControllerPendingDestroy();
 	SetLifeSpan(0.15f);
 	PlayRagdoll();
 }
 
 void APZCharacterBase::PlayRagdoll()
 {
+	
+}
 
+int32 APZCharacterBase::GetHealth() const
+{
+	return Health;
+}
+
+int32 APZCharacterBase::GetMaxHealth() const
+{
+	return MaxHealth;
 }
 
