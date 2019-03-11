@@ -14,9 +14,13 @@ public class ProjectZombie : ModuleRules
             "Engine",
             "InputCore",
             "AIModule",
-            "GameplayTasks"
+            "GameplayTasks",
+            "UMG"
         });
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+		PrivateDependencyModuleNames.AddRange(new string[] {
+            "Slate",
+            "SlateCore"
+        });
 	}
 }
