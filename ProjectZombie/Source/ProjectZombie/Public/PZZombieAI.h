@@ -9,6 +9,15 @@
 class UBehaviorTreeComponent;
 class APZPhysicsObject;
 
+UENUM(BlueprintType)
+enum class EAIState : uint8
+{
+	EIdle,
+	EPatrol,
+	EAttack,
+	EDistracted
+};
+
 UCLASS()
 class PROJECTZOMBIE_API APZZombieAI : public AAIController
 {
@@ -20,9 +29,11 @@ public:
 public:
 	virtual void Possess(APawn* InPawn) override;
 	
+	/** Called when player is seen by this AI controller. */
 	UFUNCTION()
 	virtual void OnSight(APawn* InPawn);
 
+	/** Called when player is heard by this AI controller. */
 	UFUNCTION()
 	virtual void OnHear(APawn* OtherActor);
 
@@ -30,13 +41,16 @@ public:
 	FName PlayerKey = "PlayerTarget";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
-	FName WaypointKey = "Waypoint";
+	FName WaypointKey = "WaypointTarget";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
 	FName SoundKey = "SoundTarget";
 
 	UPROPERTY(Transient)
 	TArray<AActor*> AIWaypoints;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	TArray<TSubclassOf<AActor>> AIPatrolPoints;
 
 	inline TArray<AActor*> GetWaypoints() const 
 	{

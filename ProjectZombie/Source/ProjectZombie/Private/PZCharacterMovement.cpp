@@ -4,11 +4,18 @@
 
 UPZCharacterMovement::UPZCharacterMovement()
 {
-	SprintSpeed = 1200.0f;
+	MaxWalkSpeed = 440.0f;
+	MaxWalkSpeedCrouched = 220.0f;
+	SprintSpeed = 880.0f;
 	NavAgentProps.bCanCrouch = true;
 }
 
 float UPZCharacterMovement::GetMaxSpeed() const
 {
-	return bIsSprinting ? SprintSpeed : Super::GetMaxSpeed();
+	if (bIsSprinting && !IsCrouching())
+	{
+		return SprintSpeed;
+	}
+
+	return Super::GetMaxSpeed();
 }
