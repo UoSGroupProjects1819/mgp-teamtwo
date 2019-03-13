@@ -15,21 +15,6 @@ APZPhysicsActor::APZPhysicsActor()
 	PerceptionStimuliSourceComp = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("NoiseComp"));
 }
 
-void APZPhysicsActor::OnBeginInteract()
-{
-	MeshComp->SetRenderCustomDepth(true);
-}
-
-void APZPhysicsActor::OnEndInteract()
-{
-	MeshComp->SetRenderCustomDepth(false);
-}
-
-void APZPhysicsActor::OnInteract(APawn* InPawn)
-{
-
-}
-
 void APZPhysicsActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 
