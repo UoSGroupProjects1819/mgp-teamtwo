@@ -6,8 +6,9 @@
 #include "PZCharacterBase.h"
 #include "PZZombie.generated.h"
 
-class UBehaviorTree;
 class UPawnSensingComponent;
+class UAIPerceptionComponent;
+class UBehaviorTree;
 
 UCLASS()
 class PROJECTZOMBIE_API APZZombie : public APZCharacterBase
@@ -15,13 +16,19 @@ class PROJECTZOMBIE_API APZZombie : public APZCharacterBase
 	GENERATED_BODY()
 	
 public:
+	/** Default UObject constructor. */
 	APZZombie(const FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
 
 private:
+	/** AI sensing component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	UPawnSensingComponent* PawnSensingComp;
+
+	/** AI perception component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	UAIPerceptionComponent* AIPerceptionComp;
 
 public:
 	UPROPERTY(EditAnywhere, Category = "AI")
@@ -45,6 +52,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
 	TSubclassOf<UDamageType> MeleeDamageType;
 
-private:
+protected:
 	FHitResult MeleeTrace(const FVector& StartTrace, const FVector& EndTrace) const;
 };
