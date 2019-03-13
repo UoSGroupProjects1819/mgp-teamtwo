@@ -4,7 +4,7 @@
 #include "DrawDebugHelpers.h"
 #include "PZCharacter.h"
 
-#define COLLISION_WEAPON ECC_GameTraceChannel1
+#define COLLISION_WEAPON ECC_GameTraceChannel4
 
 APZWeaponBase::APZWeaponBase()
 {

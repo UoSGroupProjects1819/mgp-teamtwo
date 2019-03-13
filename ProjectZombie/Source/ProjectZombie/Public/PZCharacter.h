@@ -8,10 +8,9 @@
 
 class UCameraComponent;
 class UPawnNoiseEmitterComponent;
-class USoundBase;
-class APZWeaponBase;
 class UPZCharacterMovement;
-class IPZInteract;
+class UPhysicsHandleComponent;
+class USoundBase;
 
 UCLASS()
 class PROJECTZOMBIE_API APZCharacter : public APZCharacterBase
@@ -38,19 +37,20 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
 	UPawnNoiseEmitterComponent* PawnNoiseEmitterComp;
 
+	/** Scene component, used to carry physics actor */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* SceneComp;
+
+	/** Physics handle component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
+	UPhysicsHandleComponent* PhysicsHandleComp;
+
 protected:
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	/** Get interact interface in current player view. */
-	UObject* GetInteractObjectInView();
-
-	/** Max interact distance. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
-	float MaxInteractDistance;
 
 	/** Called every time character makes a sound in the game. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
@@ -96,54 +96,39 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	virtual void ToggleCrouch();
 
-	/** Call start fire on current weapon */
+	/** Pickup up physics actor. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	virtual void StartFire();
+	virtual void OnPickup();
 
-	/** Call stop fire on current weapon */
+	/** Throw player held physics actor. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	virtual void StopFire();
+	virtual void OnThrow();
 
-	/** Call start alt fire on current weapon */
+	/** Drop player held physics actor. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	virtual void StartAltFire();
+	virtual void OnDropped();
 
-	/** Call stop alt fire on current weapon */
-	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	virtual void StopAltFire();
+	/** True if player is currently carrying a physics actor. */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Pawn")
+	bool bIsCarryingActor;
 
-	/** Spawn weapon in character inventory. */
-	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	void CreateInventory();
-
-	/** Remove all weapons from character inventory. */
-	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	void DestroyInventory();
-
-	/** Add weapon to character inventory. */
-	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	void AddWeapon(APZWeaponBase* Weap);
-
-	/** Remove weapon from character inventory. */
-	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	void RemoveWeapon(APZWeaponBase* Weap);
-
-	/** Equip weapon from character inventory. */
-	UFUNCTION(BlueprintCallable, Category = "Pawn")
-	void EquipWeapon(APZWeaponBase* Weap);
-
-	/** List of default weapons to spawn in character inventory. */
+	/** Max pickup distance for p[physics actors. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
-	TArray<TSubclassOf<APZWeaponBase>> DefaultInventoryClasses;
+	float PickupDistance;
 
-	/** List of items in player inventory. */
+	/** Launch velocity when throwing pickup physics actors. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
+	float LaunchVelocity;
+
+	/** Currently held physics actor. */
 	UPROPERTY(BlueprintReadOnly, Category = "Pawn")
-	TArray<APZWeaponBase*> Inventory;
+	UPrimitiveComponent* CurrentPickup;
 
-	/** Weapon currently equipped by character. */
-	UPROPERTY(BlueprintReadOnly, Category = "Pawn")
-	APZWeaponBase* Weapon;
+protected:
+	/**  */
+	FHitResult RayTrace(const FVector StartTrace, const FVector EndTrace) const;
 
+public:
 	/** Returns FirstPersonMesh subobject. */
 	FORCEINLINE USkeletalMeshComponent* GetFirstPersonMesh() const { return FirstPersonMesh; }
 

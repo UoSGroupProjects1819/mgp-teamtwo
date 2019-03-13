@@ -6,9 +6,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "Perception/PawnSensingComponent.h"
-#include "PZWeaponBase.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "DrawDebugHelpers.h"
 #include "PZCharacterMovement.h"
-#include "PZInteract.h"
+
+#define COLLISION_PICKUP ECC_GameTraceChannel1
 
 APZCharacter::APZCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UPZCharacterMovement>(ACharacter::CharacterMovementComponentName))
@@ -34,8 +36,15 @@ APZCharacter::APZCharacter(const FObjectInitializer& ObjectInitializer)
 	// Create a PawnNoiseEmitterComponent which will be used to emit sounds to AI characters.
 	PawnNoiseEmitterComp = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("PawnNoiseEmitterComp"));
 
+	SceneComp = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComp"));
+	SceneComp->SetupAttachment(FirstPersonMesh);
+
+	PhysicsHandleComp = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("PhysicsHandle"));
+
 	Health = 0;
 	MaxHealth = 100;
+	PickupDistance = 150.0f;
+	LaunchVelocity = 1000.0f;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
@@ -47,18 +56,16 @@ void APZCharacter::BeginPlay()
 	{
 		Health = MaxHealth;
 	}
-
-	CreateInventory();
 }
 
 void APZCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Controller)
+	if (bIsCarryingActor)
 	{
-		TScriptInterface<IPZInteract> Interact = GetInteractObjectInView();
-
+		const FVector CarryLocation = SceneComp->GetComponentLocation();
+		PhysicsHandleComp->SetTargetLocation(CarryLocation);
 	}
 }
 
@@ -76,38 +83,13 @@ void APZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APZCharacter::StopJumping);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &APZCharacter::Sprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &APZCharacter::StopSprinting);
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &APZCharacter::StartCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &APZCharacter::StopCrouch);
+	PlayerInputComponent->BindAction("ToggleCrouch", IE_Pressed, this, &APZCharacter::ToggleCrouch);
 
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APZCharacter::StartFire);
-	PlayerInputComponent->BindAction("Fire", IE_Released, this, &APZCharacter::StopAltFire);
-	PlayerInputComponent->BindAction("AltFire", IE_Pressed, this, &APZCharacter::StartAltFire);
-	PlayerInputComponent->BindAction("AltFire", IE_Released, this, &APZCharacter::StopAltFire);
-}
-
-TScriptInterface<IPZInteract> APZCharacter::GetInteractObjectInView()
-{
-	FVector CamLoc;
-	FRotator CamRot;
-
-	if (Controller == nullptr)
-		return nullptr;
-
-	Controller->GetPlayerViewPoint(CamLoc, CamRot);
-	const FVector StartTrace = CamLoc;
-	const FVector Direction = CamRot.Vector();
-	const FVector EndTrace = StartTrace + (Direction * MaxInteractDistance);
-
-	FCollisionQueryParams TraceParams(FName(TEXT("")), true, this);
-	TraceParams.bTraceAsyncScene = true;
-	TraceParams.bReturnPhysicalMaterial = true;
-	TraceParams.bTraceComplex = true;
-
-	FHitResult Hit(ForceInit);
-	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECC_GameTraceChannel3, TraceParams);
-	auto Actor = Cast<IPZInteract>(Hit.GetActor());
-	TScriptInterface<IPZInteract> Interact = TScriptInterface<IPZInteract>();
-	Interact.SetInterface(Actor);
-	Interact.SetObject(Hit.GetActor());
-	return Interact;
+	PlayerInputComponent->BindAction("Pickup", IE_Pressed, this, &APZCharacter::OnPickup);
+	PlayerInputComponent->BindAction("Drop", IE_Pressed, this, &APZCharacter::OnDropped);
+	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &APZCharacter::OnThrow);
 }
 
 void APZCharacter::CreateNoise(USoundBase* Sound, float Volume)
@@ -115,7 +97,6 @@ void APZCharacter::CreateNoise(USoundBase* Sound, float Volume)
 	if (Sound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
-
 		MakeNoise(Volume, this, GetActorLocation());
 	}
 }
@@ -189,86 +170,70 @@ void APZCharacter::ToggleCrouch()
 	bIsCrouched ? UnCrouch(false) : Crouch(false);
 }
 
-void APZCharacter::StartFire()
+void APZCharacter::OnPickup()
 {
-	if (Weapon)
+	if (!bIsCarryingActor)
 	{
-		Weapon->StartFire();
-	}
-}
-
-void APZCharacter::StopFire()
-{
-	if (Weapon)
-	{
-		Weapon->StopFire();
-	}
-}
-
-void APZCharacter::StartAltFire()
-{
-	if (Weapon)
-	{
-		Weapon->StartAltFire();
-	}
-}
-
-void APZCharacter::StopAltFire()
-{
-	if (Weapon)
-	{
-		Weapon->StopAltFire();
-	}
-}
-
-void APZCharacter::CreateInventory()
-{
-	for (int32 i = 0; i < DefaultInventoryClasses.Num(); i++)
-	{
-		if (DefaultInventoryClasses[i])
+		if (Controller)
 		{
-			FActorSpawnParameters SpawnInfo;
-			SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			APZWeaponBase* Weap =  GetWorld()->SpawnActor<APZWeaponBase>(DefaultInventoryClasses[i], SpawnInfo);
-			AddWeapon(Weap);
+			FVector StartTrace = FVector::ZeroVector;
+			FVector ShootDir = FVector::ZeroVector;
+			FRotator CamRot = FRotator::ZeroRotator;
+
+			Controller->GetPlayerViewPoint(StartTrace, CamRot);
+			ShootDir = CamRot.Vector();
+			StartTrace = StartTrace + ShootDir * ((GetActorLocation() - StartTrace) | ShootDir);
+
+			const FVector EndTrace = StartTrace + ShootDir * PickupDistance;
+			const FHitResult Impact = RayTrace(StartTrace, EndTrace);
+			if (Impact.bBlockingHit)
+			{
+				UE_LOG(LogTemp, Display, TEXT("Hit Pickup"))
+				UPrimitiveComponent* PhysicsComponent = Impact.GetComponent();
+				if (PhysicsComponent != nullptr && PhysicsComponent->IsSimulatingPhysics())
+				{
+					PhysicsHandleComp->GrabComponentAtLocationWithRotation(PhysicsComponent, NAME_None, PhysicsComponent->GetComponentLocation(), PhysicsComponent->GetComponentRotation());
+					CurrentPickup = PhysicsComponent;
+					bIsCarryingActor = true;
+					UE_LOG(LogTemp, Display, TEXT("Caryying Pickup"))
+				}
+			}
 		}
 	}
+}
 
-	if (Inventory.Num() > 0)
+void APZCharacter::OnThrow()
+{
+	if (bIsCarryingActor && CurrentPickup != nullptr)
 	{
-		EquipWeapon(Inventory[0]);
+		const FVector LaunchDirection = GetActorForwardVector();
+		const FRotator LauncRotation = GetControlRotation();
+		const FVector Direction = LaunchDirection + LauncRotation.Vector();
+		CurrentPickup->AddImpulse(Direction * LaunchVelocity, NAME_None, true);
+		OnDropped();
 	}
 }
 
-void APZCharacter::DestroyInventory()
+void APZCharacter::OnDropped()
 {
-
-}
-
-void APZCharacter::AddWeapon(APZWeaponBase* Weap)
-{
-	if (Weap)
+	if (bIsCarryingActor)
 	{
-		Weap->GivenTo(this);
-		Inventory.AddUnique(Weap);
+		PhysicsHandleComp->ReleaseComponent();
+		CurrentPickup = nullptr;
+		bIsCarryingActor = false;
+		UE_LOG(LogTemp, Display, TEXT("Dropped Pickup"))
 	}
 }
 
-void APZCharacter::RemoveWeapon(APZWeaponBase* Weap)
+FHitResult APZCharacter::RayTrace(const FVector StartTrace, const FVector EndTrace) const
 {
-	if (Weap)
-	{
-		Weap->Removed();
-		Inventory.Remove(Weap);
-	}
-}
+	FCollisionQueryParams TraceParams(SCENE_QUERY_STAT(RayTrace), true, Instigator);
+	TraceParams.bTraceAsyncScene = true;
+	TraceParams.bReturnPhysicalMaterial = true;
 
-void APZCharacter::EquipWeapon(APZWeaponBase* Weap)
-{
-	if (Weap)
-	{
-		Weap->AttachToOwner();
-		Weapon = Weap;
-	}
+	FHitResult Hit(ForceInit);
+	DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 1, 0, 1);
+	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, COLLISION_PICKUP, TraceParams);
+	return Hit;
 }
 
