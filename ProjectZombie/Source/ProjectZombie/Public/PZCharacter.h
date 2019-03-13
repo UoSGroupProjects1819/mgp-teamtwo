@@ -11,6 +11,7 @@ class UPawnNoiseEmitterComponent;
 class USoundBase;
 class APZWeaponBase;
 class UPZCharacterMovement;
+class IPZInteract;
 
 UCLASS()
 class PROJECTZOMBIE_API APZCharacter : public APZCharacterBase
@@ -43,6 +44,13 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	/** Get interact interface in current player view. */
+	UObject* GetInteractObjectInView();
+
+	/** Max interact distance. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
+	float MaxInteractDistance;
 
 	/** Called every time character makes a sound in the game. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")

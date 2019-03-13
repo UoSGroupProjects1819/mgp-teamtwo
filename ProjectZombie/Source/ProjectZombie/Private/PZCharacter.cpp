@@ -8,6 +8,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "PZWeaponBase.h"
 #include "PZCharacterMovement.h"
+#include "PZInteract.h"
 
 APZCharacter::APZCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UPZCharacterMovement>(ACharacter::CharacterMovementComponentName))
@@ -53,6 +54,12 @@ void APZCharacter::BeginPlay()
 void APZCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (Controller)
+	{
+		TScriptInterface<IPZInteract> Interact = GetInteractObjectInView();
+
+	}
 }
 
 void APZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -74,6 +81,33 @@ void APZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &APZCharacter::StopAltFire);
 	PlayerInputComponent->BindAction("AltFire", IE_Pressed, this, &APZCharacter::StartAltFire);
 	PlayerInputComponent->BindAction("AltFire", IE_Released, this, &APZCharacter::StopAltFire);
+}
+
+TScriptInterface<IPZInteract> APZCharacter::GetInteractObjectInView()
+{
+	FVector CamLoc;
+	FRotator CamRot;
+
+	if (Controller == nullptr)
+		return nullptr;
+
+	Controller->GetPlayerViewPoint(CamLoc, CamRot);
+	const FVector StartTrace = CamLoc;
+	const FVector Direction = CamRot.Vector();
+	const FVector EndTrace = StartTrace + (Direction * MaxInteractDistance);
+
+	FCollisionQueryParams TraceParams(FName(TEXT("")), true, this);
+	TraceParams.bTraceAsyncScene = true;
+	TraceParams.bReturnPhysicalMaterial = true;
+	TraceParams.bTraceComplex = true;
+
+	FHitResult Hit(ForceInit);
+	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, ECC_GameTraceChannel3, TraceParams);
+	auto Actor = Cast<IPZInteract>(Hit.GetActor());
+	TScriptInterface<IPZInteract> Interact = TScriptInterface<IPZInteract>();
+	Interact.SetInterface(Actor);
+	Interact.SetObject(Hit.GetActor());
+	return Interact;
 }
 
 void APZCharacter::CreateNoise(USoundBase* Sound, float Volume)

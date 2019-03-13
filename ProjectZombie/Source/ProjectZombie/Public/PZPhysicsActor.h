@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PZInteract.h"
 #include "GameFramework/Actor.h"
 #include "PZPhysicsActor.generated.h"
 
@@ -10,13 +11,18 @@ class UAIPerceptionStimuliSourceComponent;
 class UAISense;
 
 UCLASS()
-class PROJECTZOMBIE_API APZPhysicsActor : public AActor
+class PROJECTZOMBIE_API APZPhysicsActor : public AActor, public IPZInteract
 {
 	GENERATED_BODY()
 	
 public:
 	/** Default constructor. */
 	APZPhysicsActor();
+
+	// IPZInteract Interface 
+	virtual void OnBeginInteract() override;
+	virtual void OnEndInteract() override;
+	virtual void OnInteract(APawn* InPawn) override;
 
 private:
 	/** Physics actor mesh component. */

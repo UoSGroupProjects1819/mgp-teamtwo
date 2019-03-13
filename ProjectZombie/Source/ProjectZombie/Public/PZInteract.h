@@ -19,5 +19,5 @@ class PROJECTZOMBIE_API IPZInteract
 public:
 	virtual void OnBeginInteract() = 0;
 	virtual void OnEndInteract() = 0;
-	virtual void OnInteract() = 0;
+	virtual void OnInteract(APawn* InPawn) = 0;
 };
