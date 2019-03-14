@@ -11,4 +11,6 @@ class PROJECTZOMBIE_API APZGameStateBase : public AGameStateBase
 {
 	GENERATED_BODY()
 	
+public:
+	APZGameStateBase();
 };

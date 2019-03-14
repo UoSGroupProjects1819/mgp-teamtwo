@@ -18,14 +18,23 @@ public:
 	/** Default constructor. */
 	APZPhysicsActor();
 
+	UFUNCTION(BlueprintCallable, Category = "Actor")
+	virtual void OnUsed(APawn* InPawn);
+
+	UFUNCTION(BlueprintCallable, Category = "Actor")
+	virtual void OnStartFocus();
+
+	UFUNCTION(BlueprintCallable, Category = "Actor")
+	virtual void OnBeginFocus();
+
 private:
 	/** Physics actor mesh component. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* MeshComp;
 
-	/** AI perception stimuli source component. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	UAIPerceptionStimuliSourceComponent* PerceptionStimuliSourceComp;
+	///** AI perception stimuli source component. */
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	//UAIPerceptionStimuliSourceComponent* PerceptionStimuliSourceComp;
 
 public:
 	UFUNCTION()

@@ -2,3 +2,7 @@
 
 #include "PZGameStateBase.h"
 
+APZGameStateBase::APZGameStateBase()
+{
+
+}

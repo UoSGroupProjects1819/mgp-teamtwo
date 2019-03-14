@@ -12,12 +12,12 @@ APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	PawnSensingComp->SetPeripheralVisionAngle(60.0f);
 
-	AIPerceptionComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComp"));
+	//AIPerceptionComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComp"));
 
 	AIControllerClass = APZZombieAI::StaticClass();
-	MaxHealth = 50;
+	//MaxHealth = 50;
 	MeleeRange = 150.0f;
-	MeleeDamage = 25.0f;
+	MeleeDamage = 100.0f;
 }
 
 void APZZombie::BeginPlay()

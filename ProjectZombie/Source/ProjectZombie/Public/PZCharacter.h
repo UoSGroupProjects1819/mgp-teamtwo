@@ -45,12 +45,13 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
 	UPhysicsHandleComponent* PhysicsHandleComp;
 
-protected:
-	virtual void BeginPlay() override;
 
 public:	
+	// Being ACharcter interface.
+	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	// End ACharacter interface.
 
 	/** Called every time character makes a sound in the game. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
@@ -125,7 +126,7 @@ public:
 	UPrimitiveComponent* CurrentPickup;
 
 protected:
-	/**  */
+	/** Fire a ray trace from the players camera. */
 	FHitResult RayTrace(const FVector StartTrace, const FVector EndTrace) const;
 
 public:

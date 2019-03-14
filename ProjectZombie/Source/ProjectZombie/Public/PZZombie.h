@@ -26,9 +26,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	UPawnSensingComponent* PawnSensingComp;
 
-	/** AI perception component */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	UAIPerceptionComponent* AIPerceptionComp;
+	///** AI perception component */
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	//UAIPerceptionComponent* AIPerceptionComp;
 
 public:
 	UPROPERTY(EditAnywhere, Category = "AI")

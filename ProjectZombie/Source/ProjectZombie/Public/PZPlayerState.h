@@ -11,4 +11,6 @@ class PROJECTZOMBIE_API APZPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	
+public:
+	APZPlayerState();
 };
