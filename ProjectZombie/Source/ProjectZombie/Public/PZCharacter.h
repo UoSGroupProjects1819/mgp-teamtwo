@@ -11,6 +11,7 @@ class UPawnNoiseEmitterComponent;
 class UPZCharacterMovement;
 class UPhysicsHandleComponent;
 class USoundBase;
+class APZPhysicsActor;
 
 UCLASS()
 class PROJECTZOMBIE_API APZCharacter : public APZCharacterBase
@@ -45,13 +46,28 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
 	UPhysicsHandleComponent* PhysicsHandleComp;
 
-
 public:	
 	// Being ACharcter interface.
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End ACharacter interface.
+
+	/** Get physics actor currently in player view. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Pawn")
+	APZPhysicsActor* GetPhysicsActorInView();
+
+	/** Max distance to render outline on physics actors. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
+	float MaxOutlineDistance;
+
+	/** True in first frame when physics actor is in player view. */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Pawn")
+	bool bHasNewFocus;
+
+	/** Physics actor currently in player view. */
+	UPROPERTY(BlueprintReadOnly, Category = "Pawn")
+	APZPhysicsActor* CurrentPhysicsActor;
 
 	/** Called every time character makes a sound in the game. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")

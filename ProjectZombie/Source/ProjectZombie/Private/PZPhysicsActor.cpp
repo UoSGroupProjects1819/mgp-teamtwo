@@ -23,12 +23,12 @@ void APZPhysicsActor::OnUsed(APawn* InPawn)
 
 void APZPhysicsActor::OnStartFocus()
 {
-
+	MeshComp->SetRenderCustomDepth(true);
 }
 
-void APZPhysicsActor::OnBeginFocus()
+void APZPhysicsActor::OnEndFocus()
 {
-
+	MeshComp->SetRenderCustomDepth(false);
 }
 
 void APZPhysicsActor::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

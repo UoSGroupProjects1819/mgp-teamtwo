@@ -9,6 +9,7 @@
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "DrawDebugHelpers.h"
 #include "PZCharacterMovement.h"
+#include "PZPhysicsActor.h"
 
 #define COLLISION_PICKUP ECC_GameTraceChannel1
 
@@ -45,6 +46,8 @@ APZCharacter::APZCharacter(const FObjectInitializer& ObjectInitializer)
 	MaxHealth = 100;
 	PickupDistance = 150.0f;
 	LaunchVelocity = 1000.0f;
+	MaxOutlineDistance = 150.0f;
+	bHasNewFocus = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
@@ -61,6 +64,30 @@ void APZCharacter::BeginPlay()
 void APZCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (Controller)
+	{
+		APZPhysicsActor* Actor = GetPhysicsActorInView();
+		if (CurrentPhysicsActor != Actor)
+		{
+			if (CurrentPhysicsActor)
+			{
+				CurrentPhysicsActor->OnEndFocus();
+			}
+
+			bHasNewFocus = true;
+		}
+
+		CurrentPhysicsActor = Actor;
+		if (Actor)
+		{
+			if (bHasNewFocus)
+			{
+				Actor->OnStartFocus();
+				bHasNewFocus = false;
+			}
+		}
+	}
 
 	if (bIsCarryingActor)
 	{
@@ -90,6 +117,27 @@ void APZCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Pickup", IE_Pressed, this, &APZCharacter::OnPickup);
 	PlayerInputComponent->BindAction("Drop", IE_Pressed, this, &APZCharacter::OnDropped);
 	PlayerInputComponent->BindAction("Throw", IE_Pressed, this, &APZCharacter::OnThrow);
+}
+
+APZPhysicsActor* APZCharacter::GetPhysicsActorInView()
+{
+	FVector CamLoc;
+	FRotator CamRot;
+
+	if (Controller == nullptr)
+		return nullptr;
+
+	Controller->GetPlayerViewPoint(CamLoc, CamRot);
+	const FVector StartTrace = CamLoc;
+	const FVector Direction = CamRot.Vector();
+	const FVector EndTrace = StartTrace + (Direction * MaxOutlineDistance);
+	const FHitResult Hit = RayTrace(StartTrace, EndTrace);
+	if (Hit.bBlockingHit)
+	{
+		return Cast<APZPhysicsActor>(Hit.GetActor());
+	}
+
+	return nullptr;
 }
 
 void APZCharacter::CreateNoise(USoundBase* Sound, float Volume)
@@ -230,6 +278,7 @@ FHitResult APZCharacter::RayTrace(const FVector StartTrace, const FVector EndTra
 	FCollisionQueryParams TraceParams(SCENE_QUERY_STAT(RayTrace), true, Instigator);
 	TraceParams.bTraceAsyncScene = true;
 	TraceParams.bReturnPhysicalMaterial = true;
+	TraceParams.bTraceComplex = true;
 
 	FHitResult Hit(ForceInit);
 	DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 1, 0, 1);

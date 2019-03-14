@@ -25,7 +25,7 @@ public:
 	virtual void OnStartFocus();
 
 	UFUNCTION(BlueprintCallable, Category = "Actor")
-	virtual void OnBeginFocus();
+	virtual void OnEndFocus();
 
 private:
 	/** Physics actor mesh component. */
