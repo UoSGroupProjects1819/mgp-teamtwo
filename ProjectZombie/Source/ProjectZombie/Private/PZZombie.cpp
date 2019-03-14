@@ -2,6 +2,7 @@
 
 #include "PZZombie.h"
 #include "Perception/PawnSensingComponent.h"
+#include "Perception/AIPerceptionComponent.h"
 #include "DrawDebugHelpers.h"
 #include "PZZombieAI.h"
 
@@ -9,12 +10,14 @@ APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
-	PawnSensingComp->SetPeripheralVisionAngle(90.0f);
+	PawnSensingComp->SetPeripheralVisionAngle(60.0f);
+
+	//AIPerceptionComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComp"));
 
 	AIControllerClass = APZZombieAI::StaticClass();
-	MaxHealth = 50;
+	//MaxHealth = 50;
 	MeleeRange = 150.0f;
-	MeleeDamage = 25.0f;
+	MeleeDamage = 100.0f;
 }
 
 void APZZombie::BeginPlay()

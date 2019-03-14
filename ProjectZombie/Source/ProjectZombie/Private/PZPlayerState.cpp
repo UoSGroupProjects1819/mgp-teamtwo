@@ -2,3 +2,7 @@
 
 #include "PZPlayerState.h"
 
+APZPlayerState::APZPlayerState()
+{
+
+}
