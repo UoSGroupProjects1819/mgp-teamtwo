@@ -18,8 +18,6 @@ void APZZombieAI::Possess(APawn* InPawn)
 {
 	Super::Possess(InPawn);
 
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APZWaypoint::StaticClass(), AIWaypoints);
-
 	APZZombie* AIZombie = Cast<APZZombie>(InPawn);
 	if (AIZombie)
 	{

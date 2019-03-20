@@ -141,6 +141,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Pawn")
 	UPrimitiveComponent* CurrentPickup;
 
+private:
+	float LastNoiseVolume;
+	float LastNoiseTime;
+
 protected:
 	/** Fire a ray trace from the players camera. */
 	FHitResult RayTrace(const FVector StartTrace, const FVector EndTrace) const;

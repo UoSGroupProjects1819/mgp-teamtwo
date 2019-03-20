@@ -32,6 +32,7 @@ APZCharacter::APZCharacter(const FObjectInitializer& ObjectInitializer)
 	FirstPersonMesh->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
 	FirstPersonMesh->PrimaryComponentTick.AddPrerequisite(this, PrimaryActorTick);
 
+	// Cached character movement component
 	PZCharacterMovement = Cast<UPZCharacterMovement>(GetCharacterMovement());
 
 	// Create a PawnNoiseEmitterComponent which will be used to emit sounds to AI characters.
@@ -84,6 +85,7 @@ void APZCharacter::Tick(float DeltaTime)
 			if (bHasNewFocus)
 			{
 				Actor->OnStartFocus();
+				UE_LOG(LogTemp, Display, TEXT("Hit Pickup"))
 				bHasNewFocus = false;
 			}
 		}
@@ -146,6 +148,9 @@ void APZCharacter::CreateNoise(USoundBase* Sound, float Volume)
 	{
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation());
 		MakeNoise(Volume, this, GetActorLocation());
+
+		LastNoiseVolume = Volume;
+		LastNoiseTime = GetWorld()->GetTimeSeconds();
 	}
 }
 
@@ -236,7 +241,6 @@ void APZCharacter::OnPickup()
 			const FHitResult Impact = RayTrace(StartTrace, EndTrace);
 			if (Impact.bBlockingHit)
 			{
-				UE_LOG(LogTemp, Display, TEXT("Hit Pickup"))
 				UPrimitiveComponent* PhysicsComponent = Impact.GetComponent();
 				if (PhysicsComponent != nullptr && PhysicsComponent->IsSimulatingPhysics())
 				{
@@ -258,6 +262,7 @@ void APZCharacter::OnThrow()
 		const FRotator LauncRotation = GetControlRotation();
 		const FVector Direction = LaunchDirection + LauncRotation.Vector();
 		CurrentPickup->AddImpulse(Direction * LaunchVelocity, NAME_None, true);
+		UE_LOG(LogTemp, Display, TEXT("Thrown Pickup"))
 		OnDropped();
 	}
 }
@@ -281,7 +286,6 @@ FHitResult APZCharacter::RayTrace(const FVector StartTrace, const FVector EndTra
 	TraceParams.bTraceComplex = true;
 
 	FHitResult Hit(ForceInit);
-	//DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 1, 0, 1);
 	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, COLLISION_PICKUP, TraceParams);
 	return Hit;
 }

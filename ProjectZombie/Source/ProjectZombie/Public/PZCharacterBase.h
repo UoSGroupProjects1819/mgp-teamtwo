@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "PZCharacterBase.generated.h"
 
+class USoundBase;
+
 UCLASS()
 class PROJECTZOMBIE_API APZCharacterBase : public ACharacter
 {
@@ -31,7 +33,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	virtual void PlayRagdoll();
 
-	/**  */
+	/** Play sound on death */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	virtual void PlayDeathSound();
 
@@ -43,7 +45,15 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Pawn")
 	int32 GetMaxHealth() const;
 
+	/** Returns true if the pawn is dead */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Pawn")
+	bool IsDead() const;
+
 protected:
+	/** Sound player on death */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Pawn")
+	USoundBase* DeathSound;
+
 	/** Current health of the pawn */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
 	int32 Health;
@@ -51,4 +61,8 @@ protected:
 	/** Max health of the pawn */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
 	int32 MaxHealth;
+
+	/** True if pawn is dead */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Pawn")
+	bool bIsDead;
 };

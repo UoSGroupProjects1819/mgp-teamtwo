@@ -9,15 +9,6 @@
 class UBehaviorTreeComponent;
 class APZPhysicsObject;
 
-UENUM(BlueprintType)
-enum class EAIState : uint8
-{
-	EIdle,
-	EPatrol,
-	EAttack,
-	EDistracted
-};
-
 UCLASS()
 class PROJECTZOMBIE_API APZZombieAI : public AAIController
 {
@@ -36,6 +27,12 @@ public:
 	/** Called when player is heard by this AI controller. */
 	UFUNCTION()
 	virtual void OnHear(APawn* OtherActor);
+
+	UFUNCTION()
+	virtual void SetTargetPlayer(APawn* PawnTarget);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	FName PlayerTargetKey;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
 	FName SightKey = "SightTarget";

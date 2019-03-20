@@ -19,6 +19,7 @@ public:
 	/** Default UObject constructor. */
 	APZZombie(const FObjectInitializer& ObjectInitializer);
 
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
 
 private:
@@ -30,50 +31,48 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Collision", meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* MeleeCollisionComp;
 
-	///** AI perception component */
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
-	//UAIPerceptionComponent* AIPerceptionComp;
-
 public:
+	/** Zombies AI behavior. */
 	UPROPERTY(EditAnywhere, Category = "AI")
 	UBehaviorTree* BehaviorTree;
 
+	/** Called when the zombie senses a pawn within cone of vision. */
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	void OnSeePlayer(APawn* InPawn);
 
+	/** Called when zombie senses sounds made a pawn within hearing range. */
 	UFUNCTION(BlueprintCallable, Category = "AI")
 	void OnHearPlayer(APawn* InPawn, const FVector& Location, float Volume);
 
+	/** Flag to see if zombie has sensed player. */
+	UPROPERTY(BlueprintReadOnly, Category = "AI")
+	bool bSensedPlayer;
+
+	/** Called to perform melee attack. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void OnMelee();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-	USoundBase* IdleSound;
+	/** Called when player pawn is within melee attack range. */
+	UFUNCTION()
+	void OnMeleeCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-	USoundBase* SeenSound;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-	USoundBase* HuntingSound;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-	USoundBase* PatrolSound;
-
+	/** Damage applied on melee. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
 	float MeleeDamage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
-	float MeleeRange;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Pawn")
-	bool bCanHear;
-
+	/** Type of damage dealt on melee */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
 	TSubclassOf<UDamageType> MeleeDamageType;
 
-	UFUNCTION()
-	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	/** Sound played when zombie is idle. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* IdleSound;
 
-protected:
-	FHitResult MeleeTrace(const FVector& StartTrace, const FVector& EndTrace) const;
+	/** Sound played when zombie has sensed pawn. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* SenseSound;
+	
+	/** Sound played when zombie is patrolling. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* PatrolSound;
 };

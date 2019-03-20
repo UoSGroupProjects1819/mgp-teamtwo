@@ -1,12 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PZCharacterBase.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/CapsuleComponent.h"
 
 APZCharacterBase::APZCharacterBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	Health = 0;
 	MaxHealth = 0;
+	bIsDead = false;
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -25,7 +28,6 @@ float APZCharacterBase::TakeDamage(float Damage, struct FDamageEvent const& Dama
 	int32 ResultDamage = FMath::TruncToInt(Damage);
 	if (ResultDamage > 0)
 	{
-
 		UE_LOG(LogTemp, Display, TEXT("%s::TakeDamage() %d Class:%s Causer:%s"), *GetName(), int32(Damage), *GetNameSafe(DamageEvent.DamageTypeClass), *GetNameSafe(DamageCauser));
 		Health -= ResultDamage;
 		if (Health <= 0)
@@ -43,28 +45,42 @@ float APZCharacterBase::TakeDamage(float Damage, struct FDamageEvent const& Dama
 
 bool APZCharacterBase::Die(FDamageEvent const& DamageEvent, AController* KIller, AActor* DamageCauser)
 {
-	Health = FMath::Min<int32>(0.0f, Health);
+	if (IsPendingKill() || GetWorld()->GetAuthGameMode() == nullptr)
+	{
+		return false;
+	}
 
+	Health = FMath::Min<int32>(0.0f, Health);
 	PlayDeath();
+
 	return true;
 }
 
 void APZCharacterBase::PlayDeath()
 {
+	if (bIsDead)
+	{
+		return;
+	}
+
 	TearOff();
 	DetachFromControllerPendingDestroy();
-	SetLifeSpan(0.15f);
+	bIsDead = true;
+
+	PlayDeathSound();
 	PlayRagdoll();
 }
 
 void APZCharacterBase::PlayRagdoll()
 {
-	
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
+	SetActorEnableCollision(true);
 }
 
 void APZCharacterBase::PlayDeathSound()
 {
-
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeathSound, GetActorLocation());
 }
 
 int32 APZCharacterBase::GetHealth() const
@@ -75,5 +91,10 @@ int32 APZCharacterBase::GetHealth() const
 int32 APZCharacterBase::GetMaxHealth() const
 {
 	return MaxHealth;
+}
+
+bool APZCharacterBase::IsDead() const
+{
+	return bIsDead;
 }
 
