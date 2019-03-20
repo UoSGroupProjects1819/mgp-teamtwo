@@ -7,7 +7,9 @@
 #include "PZZombieAI.generated.h"
 
 class UBehaviorTreeComponent;
-class APZPhysicsObject;
+class APZWaypoint;
+class APZPhysicsActor;
+class APZCharacter;
 
 UCLASS()
 class PROJECTZOMBIE_API APZZombieAI : public AAIController
@@ -19,40 +21,33 @@ public:
 
 public:
 	virtual void Possess(APawn* InPawn) override;
-	
-	/** Called when player is seen by this AI controller. */
-	UFUNCTION()
-	virtual void OnSight(APawn* InPawn);
-
-	/** Called when player is heard by this AI controller. */
-	UFUNCTION()
-	virtual void OnHear(APawn* OtherActor);
 
 	UFUNCTION()
 	virtual void SetTargetPlayer(APawn* PawnTarget);
 
+	UFUNCTION()
+	virtual void SetWaypoint(APZWaypoint* NewWaypoint);
+
+	UFUNCTION()
+	virtual void SetDistraction(APZPhysicsActor* NewActor);
+
+	UFUNCTION()
+	APZCharacter* GetTargetPlayer();
+
+	UFUNCTION()
+	APZWaypoint* GetWaypoint();
+
+	UFUNCTION()
+	APZPhysicsActor* GetDistraction();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-	FName PlayerTargetKey;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
-	FName SightKey = "SightTarget";
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
-	FName HearKey = "HearTarget";
+	FName PlayerKey;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
-	FName WaypointKey = "WaypointTarget";
+	FName WaypointKey;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
-	FName SoundKey = "SoundTarget";
-
-	UPROPERTY(Transient)
-	TArray<AActor*> AIWaypoints;
-
-	inline TArray<AActor*> GetWaypoints() const
-	{
-		return AIWaypoints;
-	}
+	FName DistractionKey;
 
 private:
 	UPROPERTY(Transient)

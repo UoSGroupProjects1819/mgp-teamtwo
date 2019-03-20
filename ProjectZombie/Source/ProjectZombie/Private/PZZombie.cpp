@@ -13,9 +13,9 @@ APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 {
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	PawnSensingComp->SetPeripheralVisionAngle(60.0f);
-	PawnSensingComp->SightRadius = 2000.0f;
-	PawnSensingComp->HearingThreshold = 600.0f;
-	PawnSensingComp->LOSHearingThreshold = 1200.0f;
+	PawnSensingComp->SightRadius = 1000.0f;
+	PawnSensingComp->HearingThreshold = 300.0f;
+	PawnSensingComp->LOSHearingThreshold = 600.0f;
 
 	MeleeCollisionComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeCollision"));
 	MeleeCollisionComp->SetupAttachment(GetCapsuleComponent());
@@ -51,21 +51,27 @@ void APZZombie::BeginPlay()
 
 void APZZombie::OnSeePlayer(APawn* InPawn)
 {
+	bSensedPlayer = true;
+	LastSeenTime = GetWorld()->GetTimeSeconds();
+
 	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
 	if (AIController)
 	{
-		UE_LOG(LogTemp, Display, TEXT("Sensed Pawn: %s", InPawn->GetNameSafe()));
-		AIController->OnSight(InPawn);
+		UE_LOG(LogTemp, Display, TEXT("Sensed Pawn: %s"), *GetNameSafe(InPawn));
+		AIController->SetTargetPlayer(InPawn);
 	}
 }
 
 void APZZombie::OnHearPlayer(APawn* InPawn, const FVector& Location, float Volume)
 {
+	bSensedPlayer = true;
+	LastHeardTime = GetWorld()->GetTimeSeconds();
+
 	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
 	if (AIController && InPawn != this)
 	{
-		UE_LOG(LogTemp, Display, TEXT("Sensed Pawn: %s", InPawn->GetNameSafe()));
-		AIController->OnHear(InPawn);
+		UE_LOG(LogTemp, Display, TEXT("Sensed Pawn: %s"), *GetNameSafe(InPawn));
+		AIController->SetTargetPlayer(InPawn);
 	}
 }
 

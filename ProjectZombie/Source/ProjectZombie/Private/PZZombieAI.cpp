@@ -7,11 +7,17 @@
 #include "Kismet/GameplayStatics.h"
 #include "PZZombie.h"
 #include "PZWaypoint.h"
+#include "PZPhysicsActor.h"
+#include "PZCharacter.h"
 
 APZZombieAI::APZZombieAI()
 {
 	BehaviorComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorComp"));
 	BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComp"));
+
+	WaypointKey = "PatrolPoint";
+	PlayerKey = "Player";
+	DistractionKey = "Distraction";
 }
 
 void APZZombieAI::Possess(APawn* InPawn)
@@ -29,18 +35,41 @@ void APZZombieAI::Possess(APawn* InPawn)
 	}
 }
 
-void APZZombieAI::OnSight(APawn* InPawn)
+void APZZombieAI::SetTargetPlayer(APawn* PawnTarget)
 {
 	if (BlackboardComp)
 	{
-		BlackboardComp->SetValueAsObject(SightKey, InPawn);
+		BlackboardComp->SetValueAsObject(PlayerKey, PawnTarget);
 	}
 }
 
-void APZZombieAI::OnHear(APawn* InPawn)
+void APZZombieAI::SetWaypoint(APZWaypoint* NewWaypoint)
 {
 	if (BlackboardComp)
 	{
-		BlackboardComp->SetValueAsObject(HearKey, InPawn);
+		BlackboardComp->SetValueAsObject(WaypointKey, NewWaypoint);
 	}
+}
+
+void APZZombieAI::SetDistraction(APZPhysicsActor* NewActor)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsObject(DistractionKey, NewActor);
+	}
+}
+
+APZCharacter* APZZombieAI::GetTargetPlayer()
+{
+
+}
+
+APZWaypoint* APZZombieAI::GetWaypoint()
+{
+
+}
+
+APZPhysicsActor* APZZombieAI::GetDistraction()
+{
+
 }

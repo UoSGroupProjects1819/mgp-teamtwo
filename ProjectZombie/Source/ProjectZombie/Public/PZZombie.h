@@ -48,6 +48,14 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "AI")
 	bool bSensedPlayer;
 
+	/** Last time the player was seen by the zombie. */
+	UPROPERTY(BlueprintReadOnly, Category = "AI")
+	float LastSeenTime;
+
+	/** Last time the player was heard by the zombie. */
+	UPROPERTY(BlueprintReadOnly, Category = "AI")
+	float LastHeardTime;
+
 	/** Called to perform melee attack. */
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void OnMelee();
