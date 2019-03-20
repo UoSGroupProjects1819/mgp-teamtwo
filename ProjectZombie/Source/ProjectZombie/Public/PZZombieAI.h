@@ -38,7 +38,10 @@ public:
 	virtual void OnHear(APawn* OtherActor);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
-	FName PlayerKey = "PlayerTarget";
+	FName SightKey = "SightTarget";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AI")
+	FName HearKey = "HearTarget";
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	FName WaypointKey = "WaypointTarget";
@@ -49,10 +52,7 @@ public:
 	UPROPERTY(Transient)
 	TArray<AActor*> AIWaypoints;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-	TArray<TSubclassOf<AActor>> AIPatrolPoints;
-
-	inline TArray<AActor*> GetWaypoints() const 
+	inline TArray<AActor*> GetWaypoints() const
 	{
 		return AIWaypoints;
 	}

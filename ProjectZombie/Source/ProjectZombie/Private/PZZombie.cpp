@@ -3,8 +3,10 @@
 #include "PZZombie.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
 #include "PZZombieAI.h"
+#include "PZCharacter.h"
 
 APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -12,12 +14,16 @@ APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	PawnSensingComp->SetPeripheralVisionAngle(60.0f);
 
+	MeleeCollisionComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeCollision"));
+	MeleeCollisionComp->SetupAttachment(GetCapsuleComponent());
+
 	//AIPerceptionComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComp"));
 
 	AIControllerClass = APZZombieAI::StaticClass();
 	//MaxHealth = 50;
 	MeleeRange = 150.0f;
 	MeleeDamage = 100.0f;
+	bCanHear = false;
 }
 
 void APZZombie::BeginPlay()
@@ -27,7 +33,7 @@ void APZZombie::BeginPlay()
 	if (PawnSensingComp)
 	{
 		PawnSensingComp->OnSeePawn.AddDynamic(this, &APZZombie::OnSeePlayer);
-		PawnSensingComp->OnHearNoise.AddDynamic(this, &APZZombie::OnHearNoise);
+		PawnSensingComp->OnHearNoise.AddDynamic(this, &APZZombie::OnHearPlayer);
 	}
 }
 
@@ -41,13 +47,14 @@ void APZZombie::OnSeePlayer(APawn* InPawn)
 	}
 }
 
-void APZZombie::OnHearNoise(APawn* InPawn, const FVector& Location, float Volume)
+void APZZombie::OnHearPlayer(APawn* InPawn, const FVector& Location, float Volume)
 {
 	APZZombieAI* AIController = Cast<APZZombieAI>(GetController());
 	if (AIController && InPawn != this)
 	{
 		UE_LOG(LogTemp, Display, TEXT("I Hear You!"));
 		AIController->OnHear(InPawn);
+		bCanHear = true;
 	}
 }
 
@@ -74,6 +81,19 @@ void APZZombie::OnMelee()
 		{
 			FDamageEvent MeleeDamageEvent(MeleeDamageType);
 			DamagedActor->TakeDamage(MeleeDamage, MeleeDamageEvent, GetController(), this);
+		}
+	}
+}
+
+void APZZombie::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor != nullptr)
+	{
+		APZCharacter* Char = Cast<APZCharacter>(OtherActor);
+		if (Char)
+		{
+			FDamageEvent MeleeDamageEvent(MeleeDamageType);
+			Char->TakeDamage(MeleeDamage, MeleeDamageEvent, GetController(), this);
 		}
 	}
 }

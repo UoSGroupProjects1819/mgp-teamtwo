@@ -35,7 +35,7 @@ void APZZombieAI::OnSight(APawn* InPawn)
 {
 	if (BlackboardComp)
 	{
-		BlackboardComp->SetValueAsObject(PlayerKey, InPawn);
+		BlackboardComp->SetValueAsObject(SightKey, InPawn);
 	}
 }
 
@@ -43,6 +43,6 @@ void APZZombieAI::OnHear(APawn* InPawn)
 {
 	if (BlackboardComp)
 	{
-		BlackboardComp->SetValueAsObject(SoundKey, InPawn);
+		BlackboardComp->SetValueAsObject(HearKey, InPawn);
 	}
 }

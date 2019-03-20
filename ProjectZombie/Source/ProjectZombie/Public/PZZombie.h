@@ -26,6 +26,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	UPawnSensingComponent* PawnSensingComp;
 
+	/** Melee collision capsule component */
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Collision", meta = (AllowPrivateAccess = "true"))
+	UCapsuleComponent* MeleeCollisionComp;
+
 	///** AI perception component */
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	//UAIPerceptionComponent* AIPerceptionComp;
@@ -38,7 +42,7 @@ public:
 	void OnSeePlayer(APawn* InPawn);
 
 	UFUNCTION(BlueprintCallable, Category = "AI")
-	void OnHearNoise(APawn* InPawn, const FVector& Location, float Volume);
+	void OnHearPlayer(APawn* InPawn, const FVector& Location, float Volume);
 
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void OnMelee();
@@ -49,8 +53,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
 	float MeleeRange;
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Pawn")
+	bool bCanHear;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
 	TSubclassOf<UDamageType> MeleeDamageType;
+
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 protected:
 	FHitResult MeleeTrace(const FVector& StartTrace, const FVector& EndTrace) const;
