@@ -13,6 +13,9 @@ APZZombie::APZZombie(const FObjectInitializer& ObjectInitializer)
 {
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	PawnSensingComp->SetPeripheralVisionAngle(60.0f);
+	PawnSensingComp->SightRadius = 2000.0f;
+	PawnSensingComp->HearingThreshold = 600.0f;
+	PawnSensingComp->LOSHearingThreshold = 1200.0f;
 
 	MeleeCollisionComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeCollision"));
 	MeleeCollisionComp->SetupAttachment(GetCapsuleComponent());

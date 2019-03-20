@@ -47,6 +47,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	void OnMelee();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* IdleSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* SeenSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* HuntingSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* PatrolSound;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pawn")
 	float MeleeDamage;
 

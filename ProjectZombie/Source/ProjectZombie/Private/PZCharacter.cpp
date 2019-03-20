@@ -281,7 +281,7 @@ FHitResult APZCharacter::RayTrace(const FVector StartTrace, const FVector EndTra
 	TraceParams.bTraceComplex = true;
 
 	FHitResult Hit(ForceInit);
-	DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 1, 0, 1);
+	//DrawDebugLine(GetWorld(), StartTrace, EndTrace, FColor::Red, false, 1, 0, 1);
 	GetWorld()->LineTraceSingleByChannel(Hit, StartTrace, EndTrace, COLLISION_PICKUP, TraceParams);
 	return Hit;
 }

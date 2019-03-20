@@ -62,6 +62,11 @@ void APZCharacterBase::PlayRagdoll()
 	
 }
 
+void APZCharacterBase::PlayDeathSound()
+{
+
+}
+
 int32 APZCharacterBase::GetHealth() const
 {
 	return Health;

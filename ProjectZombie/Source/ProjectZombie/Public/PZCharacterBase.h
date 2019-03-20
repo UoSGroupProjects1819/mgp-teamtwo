@@ -31,6 +31,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pawn")
 	virtual void PlayRagdoll();
 
+	/**  */
+	UFUNCTION(BlueprintCallable, Category = "Pawn")
+	virtual void PlayDeathSound();
+
 	/** Get pawn health */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Pawn")
 	int32 GetHealth() const;
