@@ -61,15 +61,15 @@ void APZZombieAI::SetDistraction(APZPhysicsActor* NewActor)
 
 APZCharacter* APZZombieAI::GetTargetPlayer()
 {
-
+	return nullptr;
 }
 
 APZWaypoint* APZZombieAI::GetWaypoint()
 {
-
+	return nullptr;
 }
 
 APZPhysicsActor* APZZombieAI::GetDistraction()
 {
-
+	return nullptr;
 }
