@@ -42,6 +42,3 @@ ProjectZombie/*.vs
 
 # Ignore starter content for now
 **/StarterContent/**
-
-# Ignore ShellingSystem
-**/ProjectZombie/Content/ShellingSystem/**
