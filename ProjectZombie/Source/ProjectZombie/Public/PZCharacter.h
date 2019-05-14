@@ -6,6 +6,7 @@
 #include "PZCharacterBase.h"
 #include "PZCharacter.generated.h"
 
+class USkeletalMeshComponent;
 class UCameraComponent;
 class UPawnNoiseEmitterComponent;
 class UPZCharacterMovement;

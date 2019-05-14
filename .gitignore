@@ -28,6 +28,9 @@ ProjectZombie/*.vs
 *.obj
 *.pdb
 
+# Ignore builds
+**/Build/**
+
 # Engine binaries
 **/ProjectZombie/Binaries/**
 

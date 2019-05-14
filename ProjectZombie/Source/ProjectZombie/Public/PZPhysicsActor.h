@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "PZPhysicsActor.generated.h"
 
+class UStaticMeshComponent;
 class UAIPerceptionStimuliSourceComponent;
 class UAISense;
 

@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PZCharacter.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -29,7 +30,7 @@ APZCharacter::APZCharacter(const FObjectInitializer& ObjectInitializer)
 	FirstPersonMesh->bCastDynamicShadow = false;
 	FirstPersonMesh->CastShadow = false;
 	FirstPersonMesh->bReceivesDecals = false;
-	FirstPersonMesh->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
+	FirstPersonMesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
 	FirstPersonMesh->PrimaryComponentTick.AddPrerequisite(this, PrimaryActorTick);
 
 	// Cached character movement component
